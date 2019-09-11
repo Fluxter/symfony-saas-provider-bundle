@@ -1,0 +1,22 @@
+{
+    "name": "fluxter/saas-provider-bundle",
+    "description": "The SaaS Provider Bundle for easy SaaS provisioning",
+    "type": "symfony-bundle",
+    "require": {
+        "php": "^7.2",
+        "symfony/framework-bundle": "^4.3"
+    },
+    "require-dev": {
+        "symfony/yaml": "^4.3"
+    },
+    "license": "MIT",
+    "authors": [{
+        "name": "Marcel",
+        "email": "mk@fluxter.net"
+    }],
+    "autoload": {
+        "psr-4": {
+            "Fluxter\\SaasProviderBundle\\": ""
+        }
+    }
+}
