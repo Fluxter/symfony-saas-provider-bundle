@@ -4,10 +4,9 @@ namespace Fluxter\SaasProviderBundle\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use AppBundle\Entity\Community;
 use Fluxter\SaasProviderBundle\Model\SaasClientInterface;
 
-class CommunityService
+class SaasClientService
 {
     /** @var EntityManagerInterface */
     private $em;
@@ -15,12 +14,15 @@ class CommunityService
     /** @var SessionInterface */
     private $session;
 
+    private $clientEntity;
+
     private const SaasClientSessionIndex = "SAASCLIENT";
 
-    public function __construct(EntityManagerInterface $em, SessionInterface $session)
+    public function __construct(string $clientEntity, EntityManagerInterface $em, SessionInterface $session)
     {
         $this->em = $em;
         $this->session = $session;
+        $this->clientEntity = $clientEntity;
     }
 
     public function __call($name, $arguments)
@@ -36,8 +38,11 @@ class CommunityService
             return $client->$method();
         }
 
-        throw new \Exception("Unknown Client function / variable: {$name}!");
+        throw new \Exception("Unknown SaaS-Client function / variable: {$name}!");
     }
+
+    public function createClient()
+    { }
 
     public function getCurrent()
     {
@@ -46,7 +51,7 @@ class CommunityService
         }
 
         // Todo Entity name from configuration
-        $repo = $this->em->getRepository(Community::class);
+        $repo = $this->em->getRepository($this->clientEntity);
 
         /** @var SaasClientInterface $client */
         $client = $repo->findOneById($this->session->get(self::SaasClientSessionIndex));
