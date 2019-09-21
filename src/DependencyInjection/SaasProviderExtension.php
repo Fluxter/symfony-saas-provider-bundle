@@ -18,7 +18,12 @@ class SaasProviderExtension extends Extension
         $configuration = new SaasProviderConfiguration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        /*
         $definition = $container->getDefinition(SaasProviderServiceInterface::class);
         $definition->replaceArgument('client_entity', $config['client_entity']);
+        */
+
+        $container->setParameter('fluxter.saasprovider.cliententity', $config['client_entity']);
+        $container->setParameter('fluxter.saasprovider.apikey', $config['apikey']);
     }
 }

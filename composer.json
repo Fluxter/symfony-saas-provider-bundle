@@ -4,7 +4,10 @@
     "type": "symfony-bundle",
     "require": {
         "php": "^7.2",
-        "symfony/framework-bundle": "^4.3"
+        "symfony/framework-bundle": "^4.3",
+        "symfony/form": "^4.3",
+        "symfony/doctrine-bridge": "^4.3",
+        "symfony/orm-pack": "^1.0"
     },
     "require-dev": {
         "symfony/yaml": "^4.3"

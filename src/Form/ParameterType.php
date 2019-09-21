@@ -1,0 +1,20 @@
+<?php
+
+namespace Fluxter\SaasProviderBundle\Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+
+class ParameterType extends AbstractType
+{
+    public function buildForm(\Symfony\Component\Form\FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('name', TextType::class, [
+                'required' => true
+            ])
+            ->add('value', TextType::class, [
+                'required' => true
+            ]);
+    }
+}
