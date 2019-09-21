@@ -1,14 +1,21 @@
 <?php
 
+/*
+ * This file is part of the SaasProviderBundle package.
+ * (c) Fluxter <http://fluxter.net/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Fluxter\SaasProviderBundle\Model;
 
 interface SaasProviderServiceInterface
 {
-    function createClient(): SaasClientInterface;
+    public function createClient(): SaasClientInterface;
 
-    function deactivateClient(): void;
+    public function deactivateClient(): void;
 
-    function deleteClient(): ClientInterface;
+    public function deleteClient(): ClientInterface;
 
-    function updateClient(): void;
+    public function updateClient(): void;
 }

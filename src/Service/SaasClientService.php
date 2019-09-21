@@ -1,15 +1,23 @@
 <?php
 
+/*
+ * This file is part of the SaasProviderBundle package.
+ * (c) Fluxter <http://fluxter.net/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Fluxter\SaasProviderBundle\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Fluxter\SaasProviderBundle\Model\SaasClientInterface;
 use Fluxter\SaasProviderBundle\Model\SaasParameterInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class SaasClientService
 {
+    private const SaasClientSessionIndex = 'SAASCLIENT';
     /** @var EntityManagerInterface */
     private $em;
 
@@ -17,8 +25,6 @@ class SaasClientService
     private $session;
 
     private $clientEntity;
-
-    private const SaasClientSessionIndex = "SAASCLIENT";
 
     public function __construct(ContainerInterface $container, EntityManagerInterface $em, SessionInterface $session)
     {
@@ -46,7 +52,7 @@ class SaasClientService
     public function createClient(array $parameters)
     {
         /** @var SaasClientInterface $client */
-        $client = new $this->clientEntity;
+        $client = new $this->clientEntity();
 
         /** @var SaasParameterInterface $parameter */
         foreach ($parameters as $parameter) {
@@ -62,7 +68,7 @@ class SaasClientService
     public function getCurrentClient()
     {
         if (!$this->session->has(self::SaasClientSessionIndex)) {
-            throw new \Exception("SAAS-CLIENT SESSION VARIABLE NOT SPECIFIED");
+            throw new \Exception('SAAS-CLIENT SESSION VARIABLE NOT SPECIFIED');
         }
 
         // Todo Entity name from configuration
@@ -70,8 +76,8 @@ class SaasClientService
 
         /** @var SaasClientInterface $client */
         $client = $repo->findOneById($this->session->get(self::SaasClientSessionIndex));
-        if ($client == null) {
-            throw new \Exception("SAAS-CLIENT NOT FOUND!");
+        if (null == $client) {
+            throw new \Exception('SAAS-CLIENT NOT FOUND!');
         }
 
         return $client;

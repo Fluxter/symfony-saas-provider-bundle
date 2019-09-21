@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the SaasProviderBundle package.
+ * (c) Fluxter <http://fluxter.net/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Fluxter\SaasProviderBundle\DependencyInjection;
 
 use Fluxter\SaasProviderBundle\Model\SaasProviderServiceInterface;
@@ -12,7 +19,7 @@ class SaasProviderExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__).'/Resources/config'));
         $loader->load('services.yaml');
 
         $configuration = new SaasProviderConfiguration();

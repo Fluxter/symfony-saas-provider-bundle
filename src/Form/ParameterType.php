@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the SaasProviderBundle package.
+ * (c) Fluxter <http://fluxter.net/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Fluxter\SaasProviderBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
@@ -11,10 +18,10 @@ class ParameterType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'required' => true
+                'required' => true,
             ])
             ->add('value', TextType::class, [
-                'required' => true
+                'required' => true,
             ]);
     }
 }

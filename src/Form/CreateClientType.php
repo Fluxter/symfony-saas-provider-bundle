@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the SaasProviderBundle package.
+ * (c) Fluxter <http://fluxter.net/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Fluxter\SaasProviderBundle\Form;
 
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -12,7 +19,7 @@ class CreateClientType extends AbstractType
         $builder->add('parameters', EntityType::class, [
             'entry_type' => ParameterType::class,
             'multiple' => true,
-            'allow_add' => true
+            'allow_add' => true,
         ]);
     }
 }
