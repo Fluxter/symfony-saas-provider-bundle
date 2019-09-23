@@ -6,13 +6,19 @@ This file is part of the SaasProviderBundle package.
 For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.
 EOF;
+$finder = PhpCsFixer\Finder::create()
+->notPath('vendor')
+->in(__DIR__)
+->name('*.php')
+->ignoreDotFiles(true)
+->ignoreVCS(true);
 
 return PhpCsFixer\Config::create()
-    ->setRules([
+    ->setRules(array(
         '@Symfony' => true,
-        'array_syntax' => ['syntax' => 'short'],
+        'array_syntax' => array('syntax' => 'long'),
         'combine_consecutive_unsets' => true,
-        'header_comment' => ['header' => $header],
+        'header_comment' => array('header' => $header),
         'linebreak_after_opening_tag' => true,
         'no_php4_constructor' => true,
         'no_useless_else' => true,
@@ -21,12 +27,9 @@ return PhpCsFixer\Config::create()
         'php_unit_construct' => true,
         'php_unit_strict' => true,
         'phpdoc_no_empty_return' => false,
-        'single_quote' => true,
-    ])
+        'concat_space' => array('spacing' => 'one'),
+    ))
     ->setUsingCache(true)
     ->setRiskyAllowed(true)
-    ->setFinder(
-        PhpCsFixer\Finder::create()
-            ->in(__DIR__)
-    )
+    ->setFinder($finder)
 ;

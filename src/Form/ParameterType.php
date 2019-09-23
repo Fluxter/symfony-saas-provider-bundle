@@ -17,11 +17,11 @@ class ParameterType extends AbstractType
     public function buildForm(\Symfony\Component\Form\FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class, [
+            ->add('name', TextType::class, array(
                 'required' => true,
-            ])
-            ->add('value', TextType::class, [
+            ))
+            ->add('value', TextType::class, array(
                 'required' => true,
-            ]);
+            ));
     }
 }

@@ -19,7 +19,7 @@ trait ClientRepositoryTrait
         /** @var ServiceEntityRepository $this */
         $qb = $this->createQueryBuilder($alias, $indexedBy);
         $qb
-            ->andWhere($alias.'.client = :client')
+            ->andWhere($alias . '.client = :client')
             ->setParameter('client', $client->getId());
 
         return $qb;

@@ -41,6 +41,6 @@ class SaasClientController extends Controller
 
         $client = $this->clientService->createClient($form->get('parameters')->getData());
 
-        return $this->json(['success' => true]);
+        return $this->json(array('success' => true));
     }
 }

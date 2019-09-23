@@ -16,10 +16,10 @@ class CreateClientType extends AbstractType
 {
     public function buildForm(\Symfony\Component\Form\FormBuilderInterface $builder, array $options)
     {
-        $builder->add('parameters', EntityType::class, [
+        $builder->add('parameters', EntityType::class, array(
             'entry_type' => ParameterType::class,
             'multiple' => true,
             'allow_add' => true,
-        ]);
+        ));
     }
 }
