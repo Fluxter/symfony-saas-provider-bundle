@@ -1,3 +1,4 @@
-Fluxter\SaasProviderBundle\Service\SaasClientService:
-  resource: "../../Service/SaasClientService.php"
-  autowire: true
+services:
+  Fluxter\SaasProviderBundle\Service\SaasClientService:
+    resource: "../../Service/SaasClientService.php"
+    autowire: true
