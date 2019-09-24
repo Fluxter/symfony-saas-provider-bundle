@@ -9,6 +9,8 @@
 
 namespace Fluxter\SaasProviderBundle\Controller\Abstraction;
 
+use Fluxter\SaasProviderBundle\Service\SaasClientService;
+
 trait SaasClientControllerTrait
 {
     /** @var SaasClientService */

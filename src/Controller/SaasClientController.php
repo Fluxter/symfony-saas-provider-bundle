@@ -12,11 +12,11 @@ namespace Fluxter\SaasProviderBundle\Controller;
 use Fluxter\SaasProviderBundle\Form\CreateClientType;
 use Fluxter\SaasProviderBundle\Model\SaasClientInterface;
 use Fluxter\SaasProviderBundle\Service\SaasClientService;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class SaasClientController extends Controller
+class SaasClientController extends AbstractController
 {
     /** @var SaasClientService */
     private $clientService;
@@ -41,7 +41,7 @@ class SaasClientController extends Controller
             return $this->json($form, 400);
         }
 
-        $client = $this->clientService->createClient($form->get('parameters')->getData());
+        $this->clientService->createClient($form->get('parameters')->getData());
 
         return $this->json(array('success' => true));
     }

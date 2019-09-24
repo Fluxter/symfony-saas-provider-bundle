@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class SaasClientService
 {
     private const SaasClientSessionIndex = 'SAASCLIENT';
+
     /** @var EntityManagerInterface */
     private $em;
 
@@ -75,7 +76,7 @@ class SaasClientService
         $repo = $this->em->getRepository($this->clientEntity);
 
         /** @var SaasClientInterface $client */
-        $client = $repo->findOneById($this->session->get(self::SaasClientSessionIndex));
+        $client = $repo->find($this->session->get(self::SaasClientSessionIndex));
         if (null == $client) {
             throw new \Exception('SAAS-CLIENT NOT FOUND!');
         }

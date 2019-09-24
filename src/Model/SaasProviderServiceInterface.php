@@ -15,7 +15,7 @@ interface SaasProviderServiceInterface
 
     public function deactivateClient(): void;
 
-    public function deleteClient(): ClientInterface;
+    public function deleteClient(): SaasClientInterface;
 
     public function updateClient(): void;
 }
