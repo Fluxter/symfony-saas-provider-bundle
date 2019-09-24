@@ -20,18 +20,20 @@ return PhpCsFixer\Config::create()
         'combine_consecutive_unsets' => true,
         'header_comment' => array('header' => $header),
         'linebreak_after_opening_tag' => true,
-        'no_php4_constructor' => true,
-        'no_useless_else' => true,
         'ordered_class_elements' => true,
         'ordered_imports' => true,
         'php_unit_construct' => true,
         'php_unit_strict' => true,
         'phpdoc_no_empty_return' => false,
         'concat_space' => array('spacing' => 'one'),
-        'no_leading_namespace_whitespace ' => true,
+        'no_php4_constructor' => true,
+        'no_useless_else' => true,
+        'no_leading_namespace_whitespace' => true,
         'no_short_echo_tag' => true,
         'no_spaces_around_offset' => true,
-        'no_spaces_after_function_name' => true
+        'no_spaces_after_function_name' => true,
+        'no_unused_imports' => true,
+        'single_quote' => true,
 
     ))
     ->setUsingCache(true)
