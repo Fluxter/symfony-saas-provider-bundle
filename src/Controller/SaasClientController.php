@@ -31,6 +31,8 @@ class SaasClientController extends Controller
 
     public function createClientAction(Request $request, string $apikey)
     {
+        // Todo check the apikey
+
         /** @var SaasClientInterface $client */
         $client = new $this->clientEntity();
         $form = $this->createForm(CreateClientType::class, $client);

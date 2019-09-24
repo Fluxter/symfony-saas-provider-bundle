@@ -28,6 +28,11 @@ return PhpCsFixer\Config::create()
         'php_unit_strict' => true,
         'phpdoc_no_empty_return' => false,
         'concat_space' => array('spacing' => 'one'),
+        'no_leading_namespace_whitespace ' => true,
+        'no_short_echo_tag' => true,
+        'no_spaces_around_offset' => true,
+        'no_spaces_after_function_name' => true
+
     ))
     ->setUsingCache(true)
     ->setRiskyAllowed(true)
