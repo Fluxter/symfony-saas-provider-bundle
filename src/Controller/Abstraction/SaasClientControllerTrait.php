@@ -30,6 +30,6 @@ trait SaasClientControllerTrait
 
     protected function getCurrentClient()
     {
-        return $this->clientService->getCurrent();
+        return $this->clientService->getCurrentClient();
     }
 }
