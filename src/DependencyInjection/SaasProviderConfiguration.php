@@ -20,7 +20,7 @@ class SaasProviderConfiguration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
             ->children()
-            ->scalarNode('client_entity')->end()
+            ->scalarNode('client_entity')->isRequired()->end()
             ->end()
             ->end();
 
