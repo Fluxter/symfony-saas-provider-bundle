@@ -1,5 +1,7 @@
 # SaaS Provider bundle
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Fluxter/SaasProviderBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Fluxter/SaasProviderBundle/?branch=master) [![Build Status](https://scrutinizer-ci.com/g/Fluxter/SaasProviderBundle/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Fluxter/SaasProviderBundle/build-status/master)
+
 The corresponding provider bundle for the Fluxter SaaS Consumer bundle
 
 ## How to install
