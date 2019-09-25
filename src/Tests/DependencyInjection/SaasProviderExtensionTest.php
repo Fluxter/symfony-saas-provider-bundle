@@ -25,11 +25,41 @@ class SaasProviderExtensionTest extends TestCase
         $this->configuration = null;
     }
 
-    public function testUserLoadUnlessClientEntitySet()
+    public function testExceptionThrownIfClientEntityNotSet()
     {
         $loader = new SaasProviderExtension();
         $config = $this->getEmptyConfig();
         unset($config['client_entity']);
+
+        $this->expectException(InvalidConfigurationException::class);
+        $loader->load(array($config), new ContainerBuilder());
+    }
+
+    public function testExceptionThrownIfClientEntityEmpty()
+    {
+        $loader = new SaasProviderExtension();
+        $config = $this->getEmptyConfig();
+        $config['client_entity'] = '';
+
+        $this->expectException(InvalidConfigurationException::class);
+        $loader->load(array($config), new ContainerBuilder());
+    }
+
+    public function testExceptionThrownIfApiKeyNotSet()
+    {
+        $loader = new SaasProviderExtension();
+        $config = $this->getEmptyConfig();
+        unset($config['apikey']);
+
+        $this->expectException(InvalidConfigurationException::class);
+        $loader->load(array($config), new ContainerBuilder());
+    }
+
+    public function testExceptionThrownIfApiKeyEmpty()
+    {
+        $loader = new SaasProviderExtension();
+        $config = $this->getEmptyConfig();
+        $config['apikey'] = '';
 
         $this->expectException(InvalidConfigurationException::class);
         $loader->load(array($config), new ContainerBuilder());
@@ -44,6 +74,7 @@ class SaasProviderExtensionTest extends TestCase
     {
         $yaml = <<<EOF
 client_entity: Acme\MyBundle\Entity\User
+apikey: test
 EOF;
         $parser = new Parser();
 

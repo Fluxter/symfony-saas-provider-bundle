@@ -22,7 +22,7 @@ class SaasProviderExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
         $loader->load('services.yaml');
 
-        $configuration = new SaasProviderConfiguration();
+        $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
         /*

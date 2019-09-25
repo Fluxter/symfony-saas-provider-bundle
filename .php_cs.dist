@@ -34,7 +34,6 @@ return PhpCsFixer\Config::create()
         'no_spaces_after_function_name' => true,
         'no_unused_imports' => true,
         'single_quote' => true,
-
     ))
     ->setUsingCache(true)
     ->setRiskyAllowed(true)

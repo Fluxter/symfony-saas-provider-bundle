@@ -12,7 +12,7 @@ namespace Fluxter\SaasProviderBundle\DependencyInjection;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-class SaasProviderConfiguration implements ConfigurationInterface
+class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
@@ -20,7 +20,8 @@ class SaasProviderConfiguration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
             ->children()
-            ->scalarNode('client_entity')->isRequired()->end()
+            ->scalarNode('client_entity')->isRequired()->cannotBeEmpty()->end()
+            ->scalarNode('apikey')->isRequired()->cannotBeEmpty()->end()
             ->end()
             ->end();
 
