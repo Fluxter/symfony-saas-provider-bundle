@@ -66,7 +66,7 @@ class SaasClientService
         return $client;
     }
 
-    public function getCurrentClient()
+    public function getCurrentClient() : SaasClientInterface
     {
         if (!$this->session->has(self::SaasClientSessionIndex)) {
             throw new \Exception('SAAS-CLIENT SESSION VARIABLE NOT SPECIFIED');

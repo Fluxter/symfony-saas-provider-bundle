@@ -9,6 +9,7 @@
 
 namespace Fluxter\SaasProviderBundle\Controller\Abstraction;
 
+use Fluxter\SaasProviderBundle\Model\SaasClientInterface;
 use Fluxter\SaasProviderBundle\Service\SaasClientService;
 
 trait SaasClientControllerTrait
@@ -28,7 +29,7 @@ trait SaasClientControllerTrait
         return $this;
     }
 
-    protected function getCurrentClient()
+    protected function getCurrentClient() : ?SaasClientInterface
     {
         return $this->clientService->getCurrentClient();
     }
