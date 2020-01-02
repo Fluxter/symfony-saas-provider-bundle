@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Fluxter\SaasProviderBundle\Model\SaasClientInterface;
 use Fluxter\SaasProviderBundle\Model\SaasParameterInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class SaasClientService
@@ -25,13 +26,18 @@ class SaasClientService
     /** @var SessionInterface */
     private $session;
 
-    private $clientEntity;
+    /** @var string */
+    private $saasClientEntity;
 
-    public function __construct(ContainerInterface $container, EntityManagerInterface $em, SessionInterface $session)
+    /** @var RequestStack */
+    private $requestStack;
+
+    public function __construct(ContainerInterface $container, EntityManagerInterface $em, SessionInterface $session, RequestStack $requestStack)
     {
         $this->em = $em;
         $this->session = $session;
-        $this->clientEntity = $container->getParameter('fluxter.saasprovider.cliententity');
+        $this->saasClientEntity = $container->getParameter('saas_provider.client_entity');
+        $this->requestStack = $requestStack;
     }
 
     public function __call($name, $arguments)
@@ -53,7 +59,7 @@ class SaasClientService
     public function createClient(array $parameters)
     {
         /** @var SaasClientInterface $client */
-        $client = new $this->clientEntity();
+        $client = new $this->saasClientEntity();
 
         /** @var SaasParameterInterface $parameter */
         foreach ($parameters as $parameter) {
@@ -66,19 +72,75 @@ class SaasClientService
         return $client;
     }
 
-    public function getCurrentClient() : SaasClientInterface
+    /**
+     * Returns the current http host in lower case.
+     * For example: "http://localhost:8000" returns "localhost"
+     * https://test.test.de would return "test.test.de"
+     *
+     * @return string
+     */
+    private function getCurrentHttpHost() : string
     {
-        if (!$this->session->has(self::SaasClientSessionIndex)) {
-            throw new \Exception('SAAS-CLIENT SESSION VARIABLE NOT SPECIFIED');
+        $url = $this->requestStack->getCurrentRequest()->getHttpHost();
+        $url = strtolower($url);
+        if (strpos($url, ':') !== false) {
+            $url = preg_replace('/:(.*)/', '', $url);
         }
 
-        // Todo Entity name from configuration
-        $repo = $this->em->getRepository($this->clientEntity);
+        return strtolower($url);
+    }
 
+    private function discoverClient() : ?SaasClientInterface
+    {
+        $url = $this->getCurrentHttpHost();
+        $repo = $this->em->getRepository($this->saasClientEntity);
+        $client = $repo->findOneBy(['url' => $url]);
+        if ($client == null) {
+            return null;
+        }
+        
+        $this->saveSaasClientSession($client);
+        return $client;
+    }
+
+    private function resetSaasClientSession() {
+        $this->session->set(self::SaasClientSessionIndex, null);
+    }
+
+    private function saveSaasClientSession(SaasClientInterface $client) {
+        $this->session->set(self::SaasClientSessionIndex, $client->getId());
+    }
+
+    /**
+     * Returns the current client, recognized by the url and the client entity
+     *
+     * @param boolean $autodiscover
+     * @return SaasClientInterface|null
+     */
+    public function getCurrentClient(bool $autodiscover = true) : ?SaasClientInterface
+    {
+        if (!$this->session->has(self::SaasClientSessionIndex) || $this->session->get(self::SaasClientSessionIndex) == null) {
+            if ($autodiscover) {
+                $this->discoverClient();
+                return $this->getCurrentClient(false);
+            }
+
+            return null;
+        }
+
+        $repo = $this->em->getRepository($this->saasClientEntity);
         /** @var SaasClientInterface $client */
         $client = $repo->find($this->session->get(self::SaasClientSessionIndex));
         if (null == $client) {
-            throw new \Exception('SAAS-CLIENT NOT FOUND!');
+            return null;
+        }
+        
+        // Validate
+        $url = $this->getCurrentHttpHost();
+        if (strtolower($client->getUrl()) != strtolower($url)) {
+            $this->resetSaasClientSession();
+            $this->discoverClient();
+            return $this->getCurrentClient(false);
         }
 
         return $client;

@@ -26,7 +26,7 @@ class SaasClientController extends AbstractController
     public function __construct(SaasClientService $clientService, ContainerInterface $container)
     {
         $this->clientService = $clientService;
-        $this->clientEntity = $container->getParameter('fluxter.saasprovider.cliententity');
+        $this->clientEntity = $container->getParameter('saas_provider.client_entity');
     }
 
     public function createClientAction(Request $request, string $apikey)

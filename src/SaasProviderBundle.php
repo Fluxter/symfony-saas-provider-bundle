@@ -9,8 +9,13 @@
 
 namespace Fluxter\SaasProviderBundle;
 
+use Fluxter\SaasProviderBundle\DependencyInjection\SaasProviderExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class SaasProviderBundle extends Bundle
 {
+    public function getContainerExtension()
+    {
+        return new SaasProviderExtension();
+    }
 }
