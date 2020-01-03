@@ -43,7 +43,7 @@ class ClientSubscriber implements EventSubscriberInterface
         ];
 
         if (class_exists("FOS\UserBundle\FOSUserEvents")) {
-            $events[\FOS\UserBundle\FOSUserEvents::REGISTRATION_SUCCESS] = 'addSaasClientAfterSuccessfullRegistration';
+            // $events[\FOS\UserBundle\FOSUserEvents::REGISTRATION_SUCCESS] = 'addSaasClientAfterSuccessfullRegistration';
         }
 
         return $events;
@@ -63,8 +63,6 @@ class ClientSubscriber implements EventSubscriberInterface
         // Todo get the default role by the saasclient
         $defaultRole = null;
         $client = $this->clientService->getCurrentClient();
-
-        $user->addRole($client, $defaultRole);
     }
 
     /**
