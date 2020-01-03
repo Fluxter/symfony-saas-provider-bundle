@@ -17,16 +17,10 @@ trait SaasClientControllerTrait
     /** @var SaasClientService */
     private $clientService;
 
-    /**
-     * Set the value of clientService.
-     *
-     * @return self
-     */
+    /** @required */
     public function setClientService(SaasClientService $clientService)
     {
         $this->clientService = $clientService;
-
-        return $this;
     }
 
     protected function getCurrentClient() : ?SaasClientInterface
