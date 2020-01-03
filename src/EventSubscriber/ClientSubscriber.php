@@ -9,7 +9,10 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Fluxter\SaasProviderBundle\Service\SaasClientService;
+use Symfony\Bridge\Twig\TwigEngine;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Twig\Environment as TwigEnvironment;
 
 class ClientSubscriber implements EventSubscriberInterface
 {
@@ -21,12 +24,16 @@ class ClientSubscriber implements EventSubscriberInterface
 
     /** @var SaasClientService */
     private $clientService;
+    
+    /** @var TwigEnvironment */
+    private $twig;
 
-    public function __construct(EntityManagerInterface $em, SessionInterface $session, SaasClientService $clientService)
+    public function __construct(EntityManagerInterface $em, SessionInterface $session, SaasClientService $clientService, TwigEnvironment $twig)
     {
         $this->em = $em;
         $this->session = $session;
         $this->clientService = $clientService;
+        $this->twig = $twig;
     }
 
     public static function getSubscribedEvents()
@@ -69,10 +76,12 @@ class ClientSubscriber implements EventSubscriberInterface
      */
     public function checkSaasClient(KernelEvent $event)
     {
-        $current = $this->clientService->getCurrentClient();
-        if ($current == null) {
+        $client = $this->clientService->getCurrentClient();
+        if ($client == null) {
             $event->setResponse(new Response('Not found!', 404));
             return;           
         }
+
+        $this->twig->addGlobal('saas_client', $client);
     }
 }
