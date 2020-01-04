@@ -130,7 +130,7 @@ class SaasClientService
 
         $repo = $this->em->getRepository($this->saasClientEntity);
         /** @var SaasClientInterface $client */
-        $client = $repo->find($this->session->get(self::SaasClientSessionIndex));
+        $client = $repo->findOneById($this->session->get(self::SaasClientSessionIndex));
         if (null == $client) {
             return null;
         }

@@ -1,10 +1,20 @@
-<container xmlns="http://symfony.com/schema/dic/services"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://symfony.com/schema/dic/services
-        http://symfony.com/schema/dic/services/services-1.0.xsd">
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
+        <!-- System services -->
         <service id="Fluxter\SaasProviderBundle\Service\SaasClientService" public="true" autowire="true" />
 
+        <!-- Form Extensions-->
+        <service id="Fluxter\SaasProviderBundle\Form\Extension\ClientEntityTypeExtension" autowire="true" autoconfigure="true" />
+
+        <!-- Form Type Guesser -->
+        <service id="Fluxter\SaasProviderBundle\Form\TypeGuesser\SaasClientRelatedEntityTypeGuesser" autowire="false">
+            <tag name="form.type_guesser" />
+        </service>
+
+        <!-- Form Types -->
+        <service id="Fluxter\SaasProviderBundle\Form\Type\ClientEntityType" autowire="true" autoconfigure="true"/>
+
+        <!-- Eventlistener -->
         <service id="Fluxter\SaasProviderBundle\EventSubscriber\ClientSubscriber" autowire="true">
             <tag name="kernel.event_subscriber" />
         </service>

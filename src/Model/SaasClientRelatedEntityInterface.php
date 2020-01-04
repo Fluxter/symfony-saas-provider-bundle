@@ -9,7 +9,7 @@
 
 namespace Fluxter\SaasProviderBundle\Model;
 
-interface SaasClientRelatedEntity
+interface SaasClientRelatedEntityInterface
 {
     public function getClient(): SaasClientInterface;
 
