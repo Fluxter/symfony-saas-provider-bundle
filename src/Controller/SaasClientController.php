@@ -43,6 +43,6 @@ class SaasClientController extends AbstractController
 
         $this->clientService->createClient($form->get('parameters')->getData());
 
-        return $this->json(array('success' => true));
+        return $this->json(['success' => true]);
     }
 }

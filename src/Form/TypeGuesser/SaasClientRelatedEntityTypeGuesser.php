@@ -32,11 +32,11 @@ class SaasClientRelatedEntityTypeGuesser extends DoctrineOrmTypeGuesser implemen
             $class = $mapping['targetEntity'];
             $interfaces = class_implements($class);
             if (in_array(SaasClientRelatedInterface::class, $interfaces)) {
-                return new TypeGuess(ClientEntityType::class, array(
+                return new TypeGuess(ClientEntityType::class, [
                     'em' => $name,
                     'class' => $class,
                     'multiple' => $multiple,
-                ), Guess::HIGH_CONFIDENCE);
+                ], Guess::HIGH_CONFIDENCE);
             }
         }
     }

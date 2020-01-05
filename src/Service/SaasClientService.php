@@ -133,7 +133,7 @@ class SaasClientService
     {
         $url = $this->getCurrentHttpHost();
         $repo = $this->em->getRepository($this->saasClientEntity);
-        $client = $repo->findOneBy(array('url' => $url));
+        $client = $repo->findOneBy(['url' => $url]);
         if (null == $client) {
             return null;
         }

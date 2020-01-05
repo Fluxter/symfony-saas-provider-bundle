@@ -17,7 +17,7 @@ abstract class AbstractSaasClient implements SaasClientInterface
     public function getSaasParameters(): array
     {
         // Todo
-        return array();
+        return [];
     }
 
     public function addParamter(SaasParameterInterface $param)

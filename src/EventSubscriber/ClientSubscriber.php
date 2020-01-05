@@ -43,9 +43,9 @@ class ClientSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        $events = array(
-            KernelEvents::REQUEST => array('checkSaasClient', 101),
-        );
+        $events = [
+            KernelEvents::REQUEST => ['checkSaasClient', 101],
+        ];
 
         if (class_exists("FOS\UserBundle\FOSUserEvents")) {
             // $events[\FOS\UserBundle\FOSUserEvents::REGISTRATION_SUCCESS] = 'addSaasClientAfterSuccessfullRegistration';

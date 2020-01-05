@@ -32,7 +32,7 @@ class SaasProviderExtensionTest extends TestCase
         unset($config['client_entity']);
 
         $this->expectException(InvalidConfigurationException::class);
-        $loader->load(array($config), new ContainerBuilder());
+        $loader->load([$config], new ContainerBuilder());
     }
 
     public function testExceptionThrownIfClientEntityEmpty()
@@ -42,7 +42,7 @@ class SaasProviderExtensionTest extends TestCase
         $config['client_entity'] = '';
 
         $this->expectException(InvalidConfigurationException::class);
-        $loader->load(array($config), new ContainerBuilder());
+        $loader->load([$config], new ContainerBuilder());
     }
 
     public function testExceptionThrownIfApiKeyNotSet()
@@ -52,7 +52,7 @@ class SaasProviderExtensionTest extends TestCase
         unset($config['apikey']);
 
         $this->expectException(InvalidConfigurationException::class);
-        $loader->load(array($config), new ContainerBuilder());
+        $loader->load([$config], new ContainerBuilder());
     }
 
     public function testExceptionThrownIfApiKeyEmpty()
@@ -62,7 +62,7 @@ class SaasProviderExtensionTest extends TestCase
         $config['apikey'] = '';
 
         $this->expectException(InvalidConfigurationException::class);
-        $loader->load(array($config), new ContainerBuilder());
+        $loader->load([$config], new ContainerBuilder());
     }
 
     /**

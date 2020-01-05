@@ -21,8 +21,8 @@ class ClientEntityTypeExtension extends AbstractTypeExtension
 
     public static function getExtendedTypes()
     {
-        return array(
+        return [
             ClientEntityType::class,
-        );
+        ];
     }
 }

@@ -16,7 +16,7 @@ $finder = PhpCsFixer\Finder::create()
 return PhpCsFixer\Config::create()
     ->setRules(array(
         '@Symfony' => true,
-        'array_syntax' => array('syntax' => 'long'),
+        'array_syntax' => array('syntax' => 'short'),
         'combine_consecutive_unsets' => true,
         'header_comment' => array('header' => $header),
         'linebreak_after_opening_tag' => true,
