@@ -10,6 +10,7 @@
 namespace Fluxter\SaasProviderBundle\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Fluxter\SaasProviderBundle\Model\Exception\ClientCouldNotBeDiscoveredException;
 use Fluxter\SaasProviderBundle\Model\SaasClientInterface;
 use Fluxter\SaasProviderBundle\Model\SaasParameterInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -117,7 +118,7 @@ class SaasClientService
      * @param boolean $autodiscover
      * @return SaasClientInterface|null
      */
-    public function getCurrentClient(bool $autodiscover = true) : ?SaasClientInterface
+    public function getCurrentClient(bool $autodiscover = true) : SaasClientInterface
     {
         if (!$this->session->has(self::SaasClientSessionIndex) || $this->session->get(self::SaasClientSessionIndex) == null) {
             if ($autodiscover) {
@@ -132,7 +133,7 @@ class SaasClientService
         /** @var SaasClientInterface $client */
         $client = $repo->findOneById($this->session->get(self::SaasClientSessionIndex));
         if (null == $client) {
-            return null;
+            throw new ClientCouldNotBeDiscoveredException();
         }
         
         // Validate
@@ -143,6 +144,9 @@ class SaasClientService
             return $this->getCurrentClient(false);
         }
 
+        if ($client == null) {
+            throw new ClientCouldNotBeDiscoveredException();
+        }
         return $client;
     }
 }
