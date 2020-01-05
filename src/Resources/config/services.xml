@@ -2,7 +2,8 @@
     <services>
         <!-- System services -->
         <service id="Fluxter\SaasProviderBundle\Service\SaasClientService" public="true" autowire="true" />
-
+        <service id="Fluxter\SaasProviderBundle\Service\DynamicSaasClientAccessorService" public="true" autowire="true" />
+        
         <!-- Form Extensions-->
         <service id="Fluxter\SaasProviderBundle\Form\Extension\ClientEntityTypeExtension" autowire="true" autoconfigure="true" />
 
