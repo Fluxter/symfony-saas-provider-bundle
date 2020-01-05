@@ -4,29 +4,33 @@ namespace Fluxter\SaasProviderBundle\Form\TypeGuesser;
 
 use Fluxter\SaasProviderBundle\Form\Type\ClientEntityType;
 use Fluxter\SaasProviderBundle\Model\SaasClientRelatedInterface;
+use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
 use Symfony\Component\Form\FormTypeGuesserInterface;
 use Symfony\Component\Form\Guess\Guess;
 use Symfony\Component\Form\Guess\TypeGuess;
 
-class SaasClientRelatedEntityTypeGuesser implements FormTypeGuesserInterface
+class SaasClientRelatedEntityTypeGuesser extends DoctrineOrmTypeGuesser implements FormTypeGuesserInterface
 {
     public function guessType($class, $property)
     {
-        $interfaces = class_implements($class);
-        if (in_array(SaasClientRelatedInterface::class, $interfaces)) {
-            return new TypeGuess(ClientEntityType::class, [], Guess::HIGH_CONFIDENCE);
+        if (!$ret = $this->getMetadata($class)) {
+            return null;
         }
-    }
 
-    public function guessRequired($class, $property)
-    {
-    }
+        list($metadata, $name) = $ret;
+        if ($metadata->hasAssociation($property)) {
+            $multiple = $metadata->isCollectionValuedAssociation($property);
+            $mapping = $metadata->getAssociationMapping($property);
 
-    public function guessMaxLength($class, $property)
-    {
-    }
-
-    public function guessPattern($class, $property)
-    {
+            $class = $mapping['targetEntity'];
+            $interfaces = class_implements($class);
+            if (in_array(SaasClientRelatedInterface::class, $interfaces)) {
+                return new TypeGuess(ClientEntityType::class, [
+                    'em' => $name, 
+                    'class' => $class,
+                    'multiple' => $multiple
+                ], Guess::HIGH_CONFIDENCE);
+            }
+        }
     }
 }

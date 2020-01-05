@@ -7,7 +7,7 @@
         <service id="Fluxter\SaasProviderBundle\Form\Extension\ClientEntityTypeExtension" autowire="true" autoconfigure="true" />
 
         <!-- Form Type Guesser -->
-        <service id="Fluxter\SaasProviderBundle\Form\TypeGuesser\SaasClientRelatedEntityTypeGuesser" autowire="false">
+        <service id="Fluxter\SaasProviderBundle\Form\TypeGuesser\SaasClientRelatedEntityTypeGuesser" autowire="true">
             <tag name="form.type_guesser" />
         </service>
 
