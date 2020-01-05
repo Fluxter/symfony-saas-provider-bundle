@@ -13,7 +13,8 @@ use Exception;
 
 class ClientCouldNotBeDiscoveredException extends Exception
 {
-    public function __construct() {
-        parent::__construct("The client was not provided and could not be determinded by the request!");
+    public function __construct()
+    {
+        parent::__construct('The client was not provided and could not be determinded by the request!');
     }
 }

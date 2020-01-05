@@ -9,8 +9,6 @@
 
 namespace Fluxter\SaasProviderBundle\Controller\Abstraction;
 
-use Fluxter\SaasProviderBundle\Model\SaasClientInterface;
-use Fluxter\SaasProviderBundle\Service\SaasClientService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 abstract class SaasClientController extends AbstractController

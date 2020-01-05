@@ -74,55 +74,16 @@ class SaasClientService
     }
 
     /**
-     * Returns the current http host in lower case.
-     * For example: "http://localhost:8000" returns "localhost"
-     * https://test.test.de would return "test.test.de"
+     * Returns the current client, recognized by the url and the client entity.
      *
-     * @return string
-     */
-    private function getCurrentHttpHost() : string
-    {
-        $url = $this->requestStack->getCurrentRequest()->getHttpHost();
-        $url = strtolower($url);
-        if (strpos($url, ':') !== false) {
-            $url = preg_replace('/:(.*)/', '', $url);
-        }
-
-        return strtolower($url);
-    }
-
-    private function discoverClient() : ?SaasClientInterface
-    {
-        $url = $this->getCurrentHttpHost();
-        $repo = $this->em->getRepository($this->saasClientEntity);
-        $client = $repo->findOneBy(['url' => $url]);
-        if ($client == null) {
-            return null;
-        }
-        
-        $this->saveSaasClientSession($client);
-        return $client;
-    }
-
-    private function resetSaasClientSession() {
-        $this->session->set(self::SaasClientSessionIndex, null);
-    }
-
-    private function saveSaasClientSession(SaasClientInterface $client) {
-        $this->session->set(self::SaasClientSessionIndex, $client->getId());
-    }
-
-    /**
-     * Returns the current client, recognized by the url and the client entity
-     *
-     * @param boolean $autodiscover
      * @return SaasClientInterface|null
      */
-    public function getCurrentClient(bool $autodiscover = true) : SaasClientInterface
+    public function getCurrentClient(bool $autodiscover = true): SaasClientInterface
     {
-        if (!$this->session->has(self::SaasClientSessionIndex) || $this->session->get(self::SaasClientSessionIndex) == null) {
+        if (!$this->session->has(self::SaasClientSessionIndex) || null == $this->session->get(self::SaasClientSessionIndex)) {
             if ($autodiscover) {
                 $this->discoverClient();
+
                 return $this->getCurrentClient(false);
             }
 
@@ -135,18 +96,60 @@ class SaasClientService
         if (null == $client) {
             throw new ClientCouldNotBeDiscoveredException();
         }
-        
+
         // Validate
         $url = $this->getCurrentHttpHost();
         if (strtolower($client->getUrl()) != strtolower($url)) {
             $this->resetSaasClientSession();
             $this->discoverClient();
+
             return $this->getCurrentClient(false);
         }
 
-        if ($client == null) {
+        if (null == $client) {
             throw new ClientCouldNotBeDiscoveredException();
         }
+
         return $client;
+    }
+
+    /**
+     * Returns the current http host in lower case.
+     * For example: "http://localhost:8000" returns "localhost"
+     * https://test.test.de would return "test.test.de".
+     */
+    private function getCurrentHttpHost(): string
+    {
+        $url = $this->requestStack->getCurrentRequest()->getHttpHost();
+        $url = strtolower($url);
+        if (false !== strpos($url, ':')) {
+            $url = preg_replace('/:(.*)/', '', $url);
+        }
+
+        return strtolower($url);
+    }
+
+    private function discoverClient(): ?SaasClientInterface
+    {
+        $url = $this->getCurrentHttpHost();
+        $repo = $this->em->getRepository($this->saasClientEntity);
+        $client = $repo->findOneBy(array('url' => $url));
+        if (null == $client) {
+            return null;
+        }
+
+        $this->saveSaasClientSession($client);
+
+        return $client;
+    }
+
+    private function resetSaasClientSession()
+    {
+        $this->session->set(self::SaasClientSessionIndex, null);
+    }
+
+    private function saveSaasClientSession(SaasClientInterface $client)
+    {
+        $this->session->set(self::SaasClientSessionIndex, $client->getId());
     }
 }

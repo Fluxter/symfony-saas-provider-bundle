@@ -23,7 +23,7 @@ trait SaasClientControllerTrait
         $this->clientService = $clientService;
     }
 
-    protected function getCurrentClient() : ?SaasClientInterface
+    protected function getCurrentClient(): ?SaasClientInterface
     {
         return $this->clientService->getCurrentClient();
     }

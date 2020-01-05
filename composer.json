@@ -11,7 +11,8 @@
     },
     "require-dev": {
         "symfony/yaml": "^4.3",
-        "phpunit/phpunit": "^8.3"
+        "phpunit/phpunit": "^8.3",
+        "friendsofphp/php-cs-fixer": "^2.16"
     },
     "license": "MIT",
     "authors": [{

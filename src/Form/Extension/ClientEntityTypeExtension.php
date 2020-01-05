@@ -1,9 +1,10 @@
 <?php
 
 /*
- * This file is part of the ClanManager package.
- * (c) Fluxter <https://fluxter.net/>
- * Found us at <https://clanmanager.net>
+ * This file is part of the SaasProviderBundle package.
+ * (c) Fluxter <http://fluxter.net/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Fluxter\SaasProviderBundle\Form\Extension;
@@ -16,13 +17,12 @@ class ClientEntityTypeExtension extends AbstractTypeExtension
     public function buildForm(\Symfony\Component\Form\FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
-        
     }
 
     public static function getExtendedTypes()
     {
-        return [
-            ClientEntityType::class
-        ];
+        return array(
+            ClientEntityType::class,
+        );
     }
 }

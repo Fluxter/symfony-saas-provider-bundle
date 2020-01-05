@@ -1,4 +1,11 @@
-<?php 
+<?php
+
+/*
+ * This file is part of the SaasProviderBundle package.
+ * (c) Fluxter <http://fluxter.net/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Fluxter\SaasProviderBundle\Form\TypeGuesser;
 
@@ -25,11 +32,11 @@ class SaasClientRelatedEntityTypeGuesser extends DoctrineOrmTypeGuesser implemen
             $class = $mapping['targetEntity'];
             $interfaces = class_implements($class);
             if (in_array(SaasClientRelatedInterface::class, $interfaces)) {
-                return new TypeGuess(ClientEntityType::class, [
-                    'em' => $name, 
+                return new TypeGuess(ClientEntityType::class, array(
+                    'em' => $name,
                     'class' => $class,
-                    'multiple' => $multiple
-                ], Guess::HIGH_CONFIDENCE);
+                    'multiple' => $multiple,
+                ), Guess::HIGH_CONFIDENCE);
             }
         }
     }

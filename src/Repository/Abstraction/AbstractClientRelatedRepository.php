@@ -30,8 +30,6 @@ abstract class AbstractClientRelatedRepository extends ServiceEntityRepository
             $client = $this->clientService->getCurrentClient();
         }
 
-        
-
         return parent::createQueryBuilder($alias, $indexBy, $client);
     }
 }

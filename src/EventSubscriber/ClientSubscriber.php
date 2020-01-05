@@ -1,17 +1,22 @@
 <?php
 
+/*
+ * This file is part of the SaasProviderBundle package.
+ * (c) Fluxter <http://fluxter.net/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Fluxter\SaasProviderBundle\EventSubscriber;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Fluxter\SaasProviderBundle\Model\SaasClientUserInterface;
+use Fluxter\SaasProviderBundle\Service\SaasClientService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Fluxter\SaasProviderBundle\Service\SaasClientService;
-use Symfony\Bridge\Twig\TwigEngine;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment as TwigEnvironment;
 
 class ClientSubscriber implements EventSubscriberInterface
@@ -24,7 +29,7 @@ class ClientSubscriber implements EventSubscriberInterface
 
     /** @var SaasClientService */
     private $clientService;
-    
+
     /** @var TwigEnvironment */
     private $twig;
 
@@ -38,9 +43,9 @@ class ClientSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        $events = [
-            KernelEvents::REQUEST => ['checkSaasClient', 101],
-        ];
+        $events = array(
+            KernelEvents::REQUEST => array('checkSaasClient', 101),
+        );
 
         if (class_exists("FOS\UserBundle\FOSUserEvents")) {
             // $events[\FOS\UserBundle\FOSUserEvents::REGISTRATION_SUCCESS] = 'addSaasClientAfterSuccessfullRegistration';
@@ -50,9 +55,10 @@ class ClientSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Add the correct client after successfull registration
+     * Add the correct client after successfull registration.
      *
      * @param \FOS\UserBundle\Event\FormEvent $event
+     *
      * @return void
      */
     public function addSaasClientAfterSuccessfullRegistration($event)
@@ -69,15 +75,15 @@ class ClientSubscriber implements EventSubscriberInterface
      * Discovers and checks if the current saas client exists by the current domain
      * and sets the session variables and updates them if needed.
      *
-     * @param KernelEvent $event
      * @return void
      */
     public function checkSaasClient(KernelEvent $event)
     {
         $client = $this->clientService->getCurrentClient();
-        if ($client == null) {
+        if (null == $client) {
             $event->setResponse(new Response('Not found!', 404));
-            return;           
+
+            return;
         }
 
         $this->twig->addGlobal('saas_client', $client);
