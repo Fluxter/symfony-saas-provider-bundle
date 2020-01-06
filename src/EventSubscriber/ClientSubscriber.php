@@ -85,11 +85,12 @@ class ClientSubscriber implements EventSubscriberInterface
     public function checkSaasClient(KernelEvent $event)
     {
         $client = $this->clientService->tryGetCurrentClient();
-        if ($client == null) {
+        if (null == $client) {
             $event->setResponse(new Response('Not found!', 404));
+
             return;
         }
-        
+
         $this->twig->addGlobal('saas_client_object', $client);
         $this->twig->addGlobal('saas_client', $this->_dynamicSaasClientAccessorService);
     }

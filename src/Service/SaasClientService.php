@@ -64,6 +64,7 @@ class SaasClientService
             if (!$this->session->has(self::SaasClientSessionIndex) || null == $this->session->get(self::SaasClientSessionIndex)) {
                 if ($autodiscover) {
                     $this->discoverClient();
+
                     return $this->tryGetCurrentClient(false);
                 }
 
@@ -91,8 +92,7 @@ class SaasClientService
             }
 
             return $client;
-        }
-        catch(Exception $ex) {
+        } catch (Exception $ex) {
             return null;
         }
     }
@@ -105,6 +105,7 @@ class SaasClientService
     public function getCurrentClient(bool $autodiscover = true): SaasClientInterface
     {
         $client = $this->tryGetCurrentClient($autodiscover);
+
         return $client;
     }
 
