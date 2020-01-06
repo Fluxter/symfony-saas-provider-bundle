@@ -11,6 +11,7 @@ namespace Fluxter\SaasProviderBundle\EventSubscriber;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Fluxter\SaasProviderBundle\Model\SaasClientUserInterface;
+use Fluxter\SaasProviderBundle\Service\DynamicSaasClientAccessorService;
 use Fluxter\SaasProviderBundle\Service\SaasClientService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,12 +34,16 @@ class ClientSubscriber implements EventSubscriberInterface
     /** @var TwigEnvironment */
     private $twig;
 
-    public function __construct(EntityManagerInterface $em, SessionInterface $session, SaasClientService $clientService, TwigEnvironment $twig)
+    /** @var DynamicSaasClientAccessorService */
+    private $_dynamicSaasClientAccessorService;
+
+    public function __construct(EntityManagerInterface $em, SessionInterface $session, SaasClientService $clientService, TwigEnvironment $twig, DynamicSaasClientAccessorService $dynamicSaasClientAccessorService)
     {
         $this->em = $em;
         $this->session = $session;
         $this->clientService = $clientService;
         $this->twig = $twig;
+        $this->_dynamicSaasClientAccessorService = $dynamicSaasClientAccessorService;
     }
 
     public static function getSubscribedEvents()
@@ -79,13 +84,13 @@ class ClientSubscriber implements EventSubscriberInterface
      */
     public function checkSaasClient(KernelEvent $event)
     {
-        $client = $this->clientService->getCurrentClient();
-        if (null == $client) {
+        $client = $this->clientService->tryGetCurrentClient();
+        if ($client == null) {
             $event->setResponse(new Response('Not found!', 404));
-
             return;
         }
-
-        $this->twig->addGlobal('saas_client', $client);
+        
+        $this->twig->addGlobal('saas_client_object', $client);
+        $this->twig->addGlobal('saas_client', $this->_dynamicSaasClientAccessorService);
     }
 }

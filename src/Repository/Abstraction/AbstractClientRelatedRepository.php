@@ -1,10 +1,9 @@
 <?php
 
 /*
- * This file is part of the SaasProviderBundle package.
- * (c) Fluxter <http://fluxter.net/>
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is part of the ClanManager package.
+ * (c) Fluxter <https://fluxter.net/>
+ * Found us at <https://clanmanager.net>
  */
 
 namespace Fluxter\SaasProviderBundle\Repository\Abstraction;
@@ -30,6 +29,8 @@ abstract class AbstractClientRelatedRepository extends ServiceEntityRepository
             $client = $this->clientService->getCurrentClient();
         }
 
-        return parent::createQueryBuilder($alias, $indexBy, $client);
+        return parent::createQueryBuilder($alias, $indexBy)
+            ->andWhere($alias . '.client = :saasClientId')
+            ->setParameter('saasClientId', $client->getId());
     }
 }

@@ -10,6 +10,7 @@
 namespace Fluxter\SaasProviderBundle\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Fluxter\SaasProviderBundle\Model\Exception\ClientCouldNotBeDiscoveredException;
 use Fluxter\SaasProviderBundle\Model\SaasClientInterface;
 use Fluxter\SaasProviderBundle\Model\SaasParameterInterface;
@@ -41,22 +42,6 @@ class SaasClientService
         $this->requestStack = $requestStack;
     }
 
-    public function __call($name, $arguments)
-    {
-        $client = $this->getCurrentClient();
-
-        $method = "get$name";
-        if (method_exists($client, $method)) {
-            return $client->$method();
-        }
-        $method = "is$name";
-        if (method_exists($client, $method)) {
-            return $client->$method();
-        }
-
-        throw new \Exception("Unknown SaaS-Client function / variable: {$name}!");
-    }
-
     public function createClient(array $parameters)
     {
         /** @var SaasClientInterface $client */
@@ -73,6 +58,45 @@ class SaasClientService
         return $client;
     }
 
+    public function tryGetCurrentClient(bool $autodiscover = true): ?SaasClientInterface
+    {
+        try {
+            if (!$this->session->has(self::SaasClientSessionIndex) || null == $this->session->get(self::SaasClientSessionIndex)) {
+                if ($autodiscover) {
+                    $this->discoverClient();
+                    return $this->tryGetCurrentClient(false);
+                }
+
+                return null;
+            }
+
+            $repo = $this->em->getRepository($this->saasClientEntity);
+            /** @var SaasClientInterface $client */
+            $client = $repo->findOneById($this->session->get(self::SaasClientSessionIndex));
+            if (null == $client) {
+                throw new ClientCouldNotBeDiscoveredException();
+            }
+
+            // Validate
+            $url = $this->getCurrentHttpHost();
+            if (strtolower($client->getUrl()) != strtolower($url)) {
+                $this->resetSaasClientSession();
+                $this->discoverClient();
+
+                return $this->tryGetCurrentClient(false);
+            }
+
+            if (null == $client) {
+                throw new ClientCouldNotBeDiscoveredException();
+            }
+
+            return $client;
+        }
+        catch(Exception $ex) {
+            return null;
+        }
+    }
+
     /**
      * Returns the current client, recognized by the url and the client entity.
      *
@@ -80,36 +104,7 @@ class SaasClientService
      */
     public function getCurrentClient(bool $autodiscover = true): SaasClientInterface
     {
-        if (!$this->session->has(self::SaasClientSessionIndex) || null == $this->session->get(self::SaasClientSessionIndex)) {
-            if ($autodiscover) {
-                $this->discoverClient();
-
-                return $this->getCurrentClient(false);
-            }
-
-            return null;
-        }
-
-        $repo = $this->em->getRepository($this->saasClientEntity);
-        /** @var SaasClientInterface $client */
-        $client = $repo->findOneById($this->session->get(self::SaasClientSessionIndex));
-        if (null == $client) {
-            throw new ClientCouldNotBeDiscoveredException();
-        }
-
-        // Validate
-        $url = $this->getCurrentHttpHost();
-        if (strtolower($client->getUrl()) != strtolower($url)) {
-            $this->resetSaasClientSession();
-            $this->discoverClient();
-
-            return $this->getCurrentClient(false);
-        }
-
-        if (null == $client) {
-            throw new ClientCouldNotBeDiscoveredException();
-        }
-
+        $client = $this->tryGetCurrentClient($autodiscover);
         return $client;
     }
 
