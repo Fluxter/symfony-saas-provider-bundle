@@ -25,6 +25,9 @@ trait SaasClientControllerTrait
 
     protected function getCurrentClient(): ?SaasClientInterface
     {
+        if ($this->clientService == null) {
+            throw new \Exception("Clientservice was null, did you forget to autowire the Controller " . get_class($this) . "?");
+        }
         return $this->clientService->getCurrentClient();
     }
 }
