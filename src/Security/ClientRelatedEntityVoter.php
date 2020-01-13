@@ -44,6 +44,10 @@ class ClientRelatedEntityVoter extends Voter
             return false;
         }
 
+        if ($subject->getClient() == null) {
+            return true;
+        }
+
         if ($this->_clientService->getCurrentClient() == $subject->getClient()) {
             return true;
         }
