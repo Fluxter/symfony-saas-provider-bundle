@@ -14,3 +14,19 @@ composer require fluxter/saas-provider-bundle
 
 1. Create a client entity, that implements the SaasClientInterface
 1. Create a Client Parameter entity, that implements SaasClientParameterInterface
+1. Configure the bundle
+    ```yaml
+    # config/packages/saas_provider.yaml
+    saas_provider:
+      client_entity: App\Entity\User
+      apikey: <An unused api key>
+    ```
+1. Configure your firewall to the correct voter mode
+    ```yaml
+    # config/packages/security.yaml
+    security:
+        access_decision_manager:
+            strategy: unanimous
+            allow_if_all_abstain: false
+    ```
+
