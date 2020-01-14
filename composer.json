@@ -3,7 +3,7 @@
     "description": "The SaaS Provider Bundle for easy SaaS provisioning",
     "type": "symfony-bundle",
     "require": {
-        "php": "^7.2",
+        "php": "^7.4",
         "symfony/framework-bundle": "^4.3",
         "symfony/form": "^4.3",
         "symfony/doctrine-bridge": "^4.3",
