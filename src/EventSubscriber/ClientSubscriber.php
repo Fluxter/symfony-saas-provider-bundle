@@ -35,15 +35,20 @@ class ClientSubscriber implements EventSubscriberInterface
     private $twig;
 
     /** @var DynamicSaasClientAccessorService */
-    private $_dynamicSaasClientAccessorService;
+    private $dynamicSaasClientAccessorService;
 
-    public function __construct(EntityManagerInterface $em, SessionInterface $session, SaasClientService $clientService, TwigEnvironment $twig, DynamicSaasClientAccessorService $dynamicSaasClientAccessorService)
+    public function __construct(
+        EntityManagerInterface $em, 
+        SessionInterface $session, 
+        SaasClientService $clientService, 
+        TwigEnvironment $twig,
+        DynamicSaasClientAccessorService $dynamicSaasClientAccessorService)
     {
         $this->em = $em;
         $this->session = $session;
         $this->clientService = $clientService;
         $this->twig = $twig;
-        $this->_dynamicSaasClientAccessorService = $dynamicSaasClientAccessorService;
+        $this->dynamicSaasClientAccessorService = $dynamicSaasClientAccessorService;
     }
 
     public static function getSubscribedEvents()
@@ -92,6 +97,6 @@ class ClientSubscriber implements EventSubscriberInterface
         }
 
         $this->twig->addGlobal('saas_client_object', $client);
-        $this->twig->addGlobal('saas_client', $this->_dynamicSaasClientAccessorService);
+        $this->twig->addGlobal('saas_client', $this->dynamicSaasClientAccessorService);
     }
 }
