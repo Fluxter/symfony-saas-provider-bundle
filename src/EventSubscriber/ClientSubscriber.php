@@ -57,30 +57,9 @@ class ClientSubscriber implements EventSubscriberInterface
             KernelEvents::REQUEST => ['checkSaasClient', 101],
         ];
 
-        if (class_exists("FOS\UserBundle\FOSUserEvents")) {
-            // $events[\FOS\UserBundle\FOSUserEvents::REGISTRATION_SUCCESS] = 'addSaasClientAfterSuccessfullRegistration';
-        }
-
         return $events;
     }
-
-    /**
-     * Add the correct client after successfull registration.
-     *
-     * @param \FOS\UserBundle\Event\FormEvent $event
-     *
-     * @return void
-     */
-    public function addSaasClientAfterSuccessfullRegistration($event)
-    {
-        /** @var SaasClientUserInterface $user */
-        $user = $event->getForm()->getData();
-
-        // Todo get the default role by the saasclient
-        $defaultRole = null;
-        $client = $this->clientService->getCurrentClient();
-    }
-
+    
     /**
      * Discovers and checks if the current saas client exists by the current domain
      * and sets the session variables and updates them if needed.

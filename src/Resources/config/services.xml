@@ -1,5 +1,8 @@
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
+        <!-- Commands -->
+        <service id="Fluxter\SaasProviderBundle\Command\CreateClientCommand" autowire="true" autoconfigure="true" />
+
         <!-- System services -->
         <service id="Fluxter\SaasProviderBundle\Service\SaasClientService" public="true" autowire="true" />
         <service id="Fluxter\SaasProviderBundle\Service\DynamicSaasClientAccessorService" public="true" autowire="true" />

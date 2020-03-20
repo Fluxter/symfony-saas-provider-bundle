@@ -17,6 +17,8 @@ interface SaasClientInterface
 
     public function getUrl();
 
+    public function setUrl(string $url);
+
     public function addParameter(SaasParameterInterface $parameter);
 
     public function removeParameter(SaasParameterInterface $parameter);
