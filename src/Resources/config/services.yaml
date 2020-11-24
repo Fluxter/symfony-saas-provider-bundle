@@ -1,4 +1,0 @@
-Fluxter\SaasProviderBundle\Service\SaasClientService:
-  resource: "../../Service/SaasClientService.php"
-  parameters:
-    client_entity: ""

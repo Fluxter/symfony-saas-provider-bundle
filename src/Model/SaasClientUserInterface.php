@@ -9,13 +9,10 @@
 
 namespace Fluxter\SaasProviderBundle\Model;
 
-interface SaasProviderServiceInterface
+// Todo this name is blergh
+interface SaasClientUserInterface
 {
-    public function createClient(): SaasClientInterface;
+    public function getClients(): SaasClientUserRoleInterface;
 
-    public function deactivateClient(): void;
-
-    public function deleteClient(): SaasClientInterface;
-
-    public function updateClient(): void;
+    public function addRole(SaasClientInterface $client, SaasClientUserRoleInterface $role);
 }

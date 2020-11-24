@@ -9,13 +9,9 @@
 
 namespace Fluxter\SaasProviderBundle\Model;
 
-interface SaasProviderServiceInterface
+interface SaasClientRelatedInterface
 {
-    public function createClient(): SaasClientInterface;
+    public function getClient(): ?SaasClientInterface;
 
-    public function deactivateClient(): void;
-
-    public function deleteClient(): SaasClientInterface;
-
-    public function updateClient(): void;
+    public function setClient(SaasClientInterface $client);
 }

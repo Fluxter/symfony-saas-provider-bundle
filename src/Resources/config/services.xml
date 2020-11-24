@@ -1,0 +1,31 @@
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <!-- Commands -->
+        <service id="Fluxter\SaasProviderBundle\Command\CreateClientCommand" autowire="true" autoconfigure="true" />
+
+        <!-- System services -->
+        <service id="Fluxter\SaasProviderBundle\Service\SaasClientService" public="true" autowire="true" />
+        <service id="Fluxter\SaasProviderBundle\Service\DynamicSaasClientAccessorService" public="true" autowire="true" />
+        
+        <!-- Form Extensions-->
+        <service id="Fluxter\SaasProviderBundle\Form\Extension\ClientEntityTypeExtension" autowire="true" autoconfigure="true" />
+
+        <!-- Form Type Guesser -->
+        <service id="Fluxter\SaasProviderBundle\Form\TypeGuesser\SaasClientRelatedEntityTypeGuesser" autowire="true">
+            <tag name="form.type_guesser" />
+        </service>
+
+        <!-- Voter -->
+        <service id="Fluxter\SaasProviderBundle\Security\ClientRelatedEntityVoter" autowire="true">
+            <tag name="security.voter" />
+        </service>
+
+        <!-- Form Types -->
+        <service id="Fluxter\SaasProviderBundle\Form\Type\ClientEntityType" autowire="true" autoconfigure="true" />
+
+        <!-- Eventlistener -->
+        <service id="Fluxter\SaasProviderBundle\EventSubscriber\ClientSubscriber" autowire="true">
+            <tag name="kernel.event_subscriber" />
+        </service>
+    </services>
+</container>
