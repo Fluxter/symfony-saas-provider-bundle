@@ -4,7 +4,7 @@
         <service id="Fluxter\SaasProviderBundle\Command\CreateClientCommand" autowire="true" autoconfigure="true" />
 
         <!-- System services -->
-        <service id="Fluxter\SaasProviderBundle\Service\SaasClientService" public="true" autowire="true" />
+        <service id="Fluxter\SaasProviderBundle\Service\TenantService" public="true" autowire="true" />
         <service id="Fluxter\SaasProviderBundle\Service\DynamicSaasClientAccessorService" public="true" autowire="true" />
         
         <!-- Form Extensions-->
@@ -16,7 +16,7 @@
         </service>
 
         <!-- Voter -->
-        <service id="Fluxter\SaasProviderBundle\Security\ClientRelatedEntityVoter" autowire="true">
+        <service id="Fluxter\SaasProviderBundle\Security\TenantChildVoter" autowire="true">
             <tag name="security.voter" />
         </service>
 

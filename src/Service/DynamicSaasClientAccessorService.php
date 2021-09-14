@@ -11,12 +11,12 @@ namespace Fluxter\SaasProviderBundle\Service;
 
 class DynamicSaasClientAccessorService
 {
-    /** @var SaasClientService */
+    /** @var TenantService */
     private $_clientService;
 
     public function __call($name, $arguments)
     {
-        $client = $this->_clientService->getCurrentClient();
+        $client = $this->_clientService->getTenant();
 
         $method = "get$name";
         if (method_exists($client, $method)) {
@@ -31,7 +31,7 @@ class DynamicSaasClientAccessorService
     }
 
     /** @required */
-    public function setClientService(SaasClientService $clientService)
+    public function setClientService(TenantService $clientService)
     {
         $this->_clientService = $clientService;
     }

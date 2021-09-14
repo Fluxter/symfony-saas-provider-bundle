@@ -19,7 +19,7 @@ interface TenantInterface
 
     public function setUrl(string $url);
 
-    public function addParameter(SaasParameterInterface $parameter);
+    public function addParameter(TenantChildInterface $parameter);
 
-    public function removeParameter(SaasParameterInterface $parameter);
+    public function removeParameter(TenantChildInterface $parameter);
 }

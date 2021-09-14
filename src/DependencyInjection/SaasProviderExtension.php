@@ -24,11 +24,6 @@ class SaasProviderExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        /*
-        $definition = $container->getDefinition(SaasProviderServiceInterface::class);
-        $definition->replaceArgument('client_entity', $config['client_entity']);
-        */
-
         $globalUrl = array_key_exists('global_url', $config) ? $config['global_url'] : null;
         if (null != $globalUrl) {
             $container->setParameter('saas_provider.global_url', $config['global_url']);

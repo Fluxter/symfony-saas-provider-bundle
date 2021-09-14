@@ -3,22 +3,24 @@
     "description": "The SaaS Provider Bundle for easy SaaS provisioning",
     "type": "symfony-bundle",
     "require": {
-        "php": "^7.4|^8.0",
-        "symfony/framework-bundle": "^4.0||^5.0",
-        "symfony/form": "^4.0||^5.0",
-        "symfony/doctrine-bridge": "^4.0||^5.0",
+        "php": "^8.0",
+        "symfony/framework-bundle": "^5.0",
+        "symfony/form": "^5.0",
+        "symfony/doctrine-bridge": "^5.0",
         "symfony/orm-pack": "^1.0||^2.0"
     },
     "require-dev": {
-        "symfony/yaml": "^4.0||^5.0",
+        "symfony/yaml": "^5.0",
         "phpunit/phpunit": "^8.3",
         "friendsofphp/php-cs-fixer": "^2.16"
     },
     "license": "MIT",
-    "authors": [{
-        "name": "Marcel",
-        "email": "mk@fluxter.net"
-    }],
+    "authors": [
+        {
+            "name": "Marcel",
+            "email": "mk@fluxter.net"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Fluxter\\SaasProviderBundle\\": "src/"

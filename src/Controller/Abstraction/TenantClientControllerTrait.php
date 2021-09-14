@@ -10,24 +10,24 @@
 namespace Fluxter\SaasProviderBundle\Controller\Abstraction;
 
 use Fluxter\SaasProviderBundle\Model\TenantInterface;
-use Fluxter\SaasProviderBundle\Service\SaasClientService;
+use Fluxter\SaasProviderBundle\Service\TenantService;
 
-trait SaasClientControllerTrait
+trait TenantClientControllerTrait
 {
-    /** @var SaasClientService */
+    /** @var TenantService */
     private $clientService;
 
     /** @required */
-    public function setClientService(SaasClientService $clientService)
+    public function setClientService(TenantService $clientService)
     {
         $this->clientService = $clientService;
     }
 
-    protected function getCurrentClient(): ?TenantInterface
+    protected function getTenant(): ?TenantInterface
     {
         if ($this->clientService == null) {
             throw new \Exception("Clientservice was null, did you forget to autowire the Controller " . get_class($this) . "?");
         }
-        return $this->clientService->getCurrentClient();
+        return $this->clientService->getTenant();
     }
 }

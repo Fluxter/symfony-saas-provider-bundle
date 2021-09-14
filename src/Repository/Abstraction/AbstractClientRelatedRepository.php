@@ -11,15 +11,15 @@ namespace Fluxter\SaasProviderBundle\Repository\Abstraction;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Fluxter\SaasProviderBundle\Model\TenantInterface;
-use Fluxter\SaasProviderBundle\Service\SaasClientService;
+use Fluxter\SaasProviderBundle\Service\TenantService;
 
 abstract class AbstractClientRelatedRepository extends ServiceEntityRepository
 {
-    /** @var SaasClientService */
+    /** @var TenantService */
     protected $clientService;
 
     /** @required */
-    public function setSaasClientService(SaasClientService $clientService)
+    public function setTenantService(TenantService $clientService)
     {
         $this->clientService = $clientService;
     }
@@ -27,7 +27,7 @@ abstract class AbstractClientRelatedRepository extends ServiceEntityRepository
     public function createQueryBuilder($alias, $indexBy = null, ?TenantInterface $client = null)
     {
         if (null == $client) {
-            $client = $this->clientService->getCurrentClient();
+            $client = $this->clientService->getTenant();
         }
 
         return parent::createQueryBuilder($alias, $indexBy)

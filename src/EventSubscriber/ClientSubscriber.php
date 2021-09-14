@@ -1,16 +1,13 @@
 <?php
 
 /*
- * This file is part of the SaasProviderBundle package.
  * (c) Fluxter <http://fluxter.net/>
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
  */
 
 namespace Fluxter\SaasProviderBundle\EventSubscriber;
 
 use Fluxter\SaasProviderBundle\Service\DynamicSaasClientAccessorService;
-use Fluxter\SaasProviderBundle\Service\SaasClientService;
+use Fluxter\SaasProviderBundle\Service\TenantService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,22 +17,13 @@ use Twig\Environment as TwigEnvironment;
 
 class ClientSubscriber implements EventSubscriberInterface
 {
-    /** @var SaasClientService */
-    private $clientService;
-
-    /** @var TwigEnvironment */
-    private $twig;
-
-    /** @var DynamicSaasClientAccessorService */
-    private $dynamicSaasClientAccessorService;
-
     /** @var string */
     private $globalUrl = null;
 
     public function __construct(
-        SaasClientService $clientService,
-        TwigEnvironment $twig,
-        DynamicSaasClientAccessorService $dynamicSaasClientAccessorService,
+        private TenantService $clientService,
+        private TwigEnvironment $twig,
+        private DynamicSaasClientAccessorService $dynamicSaasClientAccessorService,
         ContainerInterface $container)
     {
         $this->clientService = $clientService;
@@ -63,19 +51,20 @@ class ClientSubscriber implements EventSubscriberInterface
      */
     public function checkSaasClient(KernelEvent $event)
     {
-        $client = $this->clientService->tryGetCurrentClient();
+        $client = $this->clientService->getTenant();
         if (null != $this->globalUrl && $this->globalUrl == $this->clientService->getCurrentHttpHost()) {
             // We dont do anything because this is a "not client" page or something ;)
             return;
         }
 
+        // This is not important, because an error is thrown on "getTenant"
         if (null == $client) {
             $event->setResponse(new Response('Not found!', 404));
 
             return;
         }
 
-        $this->twig->addGlobal('saas_client_object', $client);
-        $this->twig->addGlobal('saas_client', $this->dynamicSaasClientAccessorService);
+        $this->twig->addGlobal('tenant_object', $client);
+        $this->twig->addGlobal('tenant', $this->dynamicSaasClientAccessorService);
     }
 }
