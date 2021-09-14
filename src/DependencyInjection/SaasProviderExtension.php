@@ -35,6 +35,5 @@ class SaasProviderExtension extends Extension
         }
 
         $container->setParameter('saas_provider.client_entity', $config['client_entity']);
-        $container->setParameter('saas_provider.apikey', $config['apikey']);
     }
 }

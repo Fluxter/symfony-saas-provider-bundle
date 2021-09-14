@@ -9,7 +9,7 @@
 
 namespace Fluxter\SaasProviderBundle\Model;
 
-interface SaasClientInterface
+interface TenantInterface
 {
     public function getId();
 

@@ -10,7 +10,7 @@
 namespace Fluxter\SaasProviderBundle\Controller;
 
 use Fluxter\SaasProviderBundle\Form\CreateClientType;
-use Fluxter\SaasProviderBundle\Model\SaasClientInterface;
+use Fluxter\SaasProviderBundle\Model\TenantInterface;
 use Fluxter\SaasProviderBundle\Service\SaasClientService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -29,20 +29,20 @@ class SaasClientController extends AbstractController
         $this->clientEntity = $container->getParameter('saas_provider.client_entity');
     }
 
-    public function createClientAction(Request $request, string $apikey)
-    {
-        // Todo check the apikey
+    // public function createClientAction(Request $request, string $apikey)
+    // {
+    //     // Todo check the apikey
 
-        /** @var SaasClientInterface $client */
-        $client = new $this->clientEntity();
-        $form = $this->createForm(CreateClientType::class, $client);
-        $form->handleRequest($request);
-        if (!$form->isSubmitted() || !$form->isValid()) {
-            return $this->json($form, 400);
-        }
+    //     /** @var TenantInterface $client */
+    //     $client = new $this->clientEntity();
+    //     $form = $this->createForm(CreateClientType::class, $client);
+    //     $form->handleRequest($request);
+    //     if (!$form->isSubmitted() || !$form->isValid()) {
+    //         return $this->json($form, 400);
+    //     }
 
-        $this->clientService->createClient($form->get('parameters')->getData());
+    //     $this->clientService->createClient($form->get('parameters')->getData());
 
-        return $this->json(['success' => true]);
-    }
+    //     return $this->json(['success' => true]);
+    // }
 }

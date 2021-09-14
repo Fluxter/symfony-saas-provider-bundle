@@ -9,7 +9,7 @@
 namespace Fluxter\SaasProviderBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Fluxter\SaasProviderBundle\Model\SaasClientInterface;
+use Fluxter\SaasProviderBundle\Model\TenantInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -44,7 +44,7 @@ class CreateClientCommand extends Command
 
     protected function execute(\Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output)
     {
-        /** @var SaasClientInterface */
+        /** @var TenantInterface */
         $client = new $this->saasClientEntity();
         $client->setUrl($input->getOption('url'));
         $this->em->persist($client);

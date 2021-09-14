@@ -9,10 +9,10 @@
 
 namespace Fluxter\SaasProviderBundle\Entity;
 
-use Fluxter\SaasProviderBundle\Model\SaasClientInterface;
+use Fluxter\SaasProviderBundle\Model\TenantInterface;
 use Fluxter\SaasProviderBundle\Model\SaasParameterInterface;
 
-abstract class AbstractSaasClient implements SaasClientInterface
+abstract class AbstractSaasClient implements TenantInterface
 {
     public function getSaasParameters(): array
     {

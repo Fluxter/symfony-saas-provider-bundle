@@ -9,7 +9,7 @@
 
 namespace Fluxter\SaasProviderBundle\Controller\Abstraction;
 
-use Fluxter\SaasProviderBundle\Model\SaasClientInterface;
+use Fluxter\SaasProviderBundle\Model\TenantInterface;
 use Fluxter\SaasProviderBundle\Service\SaasClientService;
 
 trait SaasClientControllerTrait
@@ -23,7 +23,7 @@ trait SaasClientControllerTrait
         $this->clientService = $clientService;
     }
 
-    protected function getCurrentClient(): ?SaasClientInterface
+    protected function getCurrentClient(): ?TenantInterface
     {
         if ($this->clientService == null) {
             throw new \Exception("Clientservice was null, did you forget to autowire the Controller " . get_class($this) . "?");

@@ -11,7 +11,7 @@ namespace Fluxter\SaasProviderBundle\Model;
 
 interface SaasClientRelatedInterface
 {
-    public function getClient(): ?SaasClientInterface;
+    public function getClient(): ?TenantInterface;
 
-    public function setClient(SaasClientInterface $client);
+    public function setClient(TenantInterface $client);
 }

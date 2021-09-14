@@ -10,11 +10,11 @@
 namespace Fluxter\SaasProviderBundle\Repository\Abstraction;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Fluxter\SaasProviderBundle\Model\SaasClientInterface;
+use Fluxter\SaasProviderBundle\Model\TenantInterface;
 
 trait ClientRepositoryTrait
 {
-    public function createClientQueryBuilder(SaasClientInterface $client, string $alias, $indexedBy = null)
+    public function createClientQueryBuilder(TenantInterface $client, string $alias, $indexedBy = null)
     {
         /** @var ServiceEntityRepository $this */
         $qb = $this->createQueryBuilder($alias, $indexedBy);

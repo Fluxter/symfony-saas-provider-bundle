@@ -1,10 +1,7 @@
 <?php
 
 /*
- * This file is part of the SaasProviderBundle package.
  * (c) Fluxter <http://fluxter.net/>
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
  */
 
 namespace Fluxter\SaasProviderBundle\DependencyInjection;
@@ -22,7 +19,6 @@ class Configuration implements ConfigurationInterface
             ->children()
             ->scalarNode('client_entity')->isRequired()->cannotBeEmpty()->end()
             ->scalarNode('global_url')->end()
-            ->scalarNode('apikey')->isRequired()->cannotBeEmpty()->end()
             ->end()
             ->end();
 

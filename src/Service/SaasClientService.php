@@ -12,7 +12,7 @@ namespace Fluxter\SaasProviderBundle\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Fluxter\SaasProviderBundle\Model\Exception\ClientCouldNotBeDiscoveredException;
-use Fluxter\SaasProviderBundle\Model\SaasClientInterface;
+use Fluxter\SaasProviderBundle\Model\TenantInterface;
 use Fluxter\SaasProviderBundle\Model\SaasParameterInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -44,7 +44,7 @@ class SaasClientService
 
     public function createClient(array $parameters)
     {
-        /** @var SaasClientInterface $client */
+        /** @var TenantInterface $client */
         $client = new $this->saasClientEntity();
 
         /** @var SaasParameterInterface $parameter */
@@ -58,7 +58,7 @@ class SaasClientService
         return $client;
     }
 
-    public function tryGetCurrentClient(bool $autodiscover = true): ?SaasClientInterface
+    public function tryGetCurrentClient(bool $autodiscover = true): ?TenantInterface
     {
         try {
             if (!$this->session->has(self::SaasClientSessionIndex) || null == $this->session->get(self::SaasClientSessionIndex)) {
@@ -72,7 +72,7 @@ class SaasClientService
             }
 
             $repo = $this->em->getRepository($this->saasClientEntity);
-            /** @var SaasClientInterface $client */
+            /** @var TenantInterface $client */
             $client = $repo->findOneById($this->session->get(self::SaasClientSessionIndex));
             if (null == $client) {
                 throw new ClientCouldNotBeDiscoveredException();
@@ -100,9 +100,9 @@ class SaasClientService
     /**
      * Returns the current client, recognized by the url and the client entity.
      *
-     * @return SaasClientInterface|null
+     * @return TenantInterface|null
      */
-    public function getCurrentClient(bool $autodiscover = true): ?SaasClientInterface
+    public function getCurrentClient(bool $autodiscover = true): ?TenantInterface
     {
         $client = $this->tryGetCurrentClient($autodiscover);
 
@@ -125,7 +125,7 @@ class SaasClientService
         return strtolower($url);
     }
 
-    private function discoverClient(): ?SaasClientInterface
+    private function discoverClient(): ?TenantInterface
     {
         $url = $this->getCurrentHttpHost();
         $repo = $this->em->getRepository($this->saasClientEntity);
@@ -144,7 +144,7 @@ class SaasClientService
         $this->session->set(self::SaasClientSessionIndex, null);
     }
 
-    private function saveSaasClientSession(SaasClientInterface $client)
+    private function saveSaasClientSession(TenantInterface $client)
     {
         $this->session->set(self::SaasClientSessionIndex, $client->getId());
     }

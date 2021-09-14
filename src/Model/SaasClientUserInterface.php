@@ -14,5 +14,5 @@ interface SaasClientUserInterface
 {
     public function getClients(): SaasClientUserRoleInterface;
 
-    public function addRole(SaasClientInterface $client, SaasClientUserRoleInterface $role);
+    public function addRole(TenantInterface $client, SaasClientUserRoleInterface $role);
 }
