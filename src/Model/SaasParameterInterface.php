@@ -9,7 +9,7 @@
 
 namespace Fluxter\SaasProviderBundle\Model;
 
-interface TenantChildInterface
+interface SaasParameterInterface
 {
     public function getName(): string;
 
