@@ -7,7 +7,6 @@
 namespace Fluxter\SaasProviderBundle\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Fluxter\SaasProviderBundle\Model\Exception\ClientCouldNotBeDiscoveredException;
 use Fluxter\SaasProviderBundle\Model\TenantChildInterface;
 use Fluxter\SaasProviderBundle\Model\TenantInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -48,7 +47,7 @@ class TenantService
     {
         $tenant = $this->discoverClient();
         if (null == $tenant) {
-            throw new ClientCouldNotBeDiscoveredException();
+            return null;
         }
 
         return $tenant;
