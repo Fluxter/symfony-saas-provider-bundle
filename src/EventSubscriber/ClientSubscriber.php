@@ -53,6 +53,10 @@ class ClientSubscriber implements EventSubscriberInterface
      */
     public function checkSaasClient(KernelEvent $event)
     {
+        if (!$event->isMainRequest()) {
+            return;
+        }
+
         $client = $this->clientService->getTenant();
 
         // This is not important, because an error is thrown on "getTenant"
@@ -66,10 +70,8 @@ class ClientSubscriber implements EventSubscriberInterface
                     $this->logger->debug("Found $route in saas_provider.exclude_routes");
 
                     return;
-                } else {
-                    
-                    $this->logger->debug("$route didn´t match pattern $pattern");
                 }
+                $this->logger->debug("$route didn´t match pattern $pattern");
             }
 
             throw new ClientCouldNotBeDiscoveredException();
