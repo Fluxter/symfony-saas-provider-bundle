@@ -7,6 +7,7 @@
 namespace Fluxter\SaasProviderBundle\Repository\Abstraction;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Fluxter\SaasProviderBundle\Model\TenantInterface;
 use Fluxter\SaasProviderBundle\Service\TenantService;
 
@@ -14,7 +15,7 @@ abstract class AbstractTenantRepository extends ServiceEntityRepository
 {
     protected TenantService $clientService;
 
-    public function findAll()
+    public function findAll(): array
     {
         return $this->createQueryBuilder('e')->getQuery()->getResult();
     }
@@ -25,7 +26,7 @@ abstract class AbstractTenantRepository extends ServiceEntityRepository
         $this->clientService = $clientService;
     }
 
-    public function createQueryBuilder($alias, $indexBy = null, ?TenantInterface $tenant = null)
+    public function createQueryBuilder($alias, $indexBy = null, ?TenantInterface $tenant = null): ?QueryBuilder
     {
         if (null == $tenant) {
             $tenant = $this->clientService->getTenant();

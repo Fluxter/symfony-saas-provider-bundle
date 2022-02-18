@@ -10,11 +10,12 @@
 namespace Fluxter\SaasProviderBundle;
 
 use Fluxter\SaasProviderBundle\DependencyInjection\SaasProviderExtension;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class SaasProviderBundle extends Bundle
 {
-    public function getContainerExtension()
+    public function getContainerExtension(): ?ExtensionInterface
     {
         return new SaasProviderExtension();
     }
