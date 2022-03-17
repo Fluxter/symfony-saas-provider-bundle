@@ -1,7 +1,7 @@
 version: "2"
 
 services:
-  app:
-    image: fluxter/web-php:7.4-dev
-    volumes:
-      - ../:/workspace/
+    app:
+        image: fluxter/web-php:v1.0-php8.1-dev-latest
+        volumes:
+            - ../:/workspace/
