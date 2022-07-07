@@ -26,6 +26,36 @@ abstract class AbstractTenantRepository extends ServiceEntityRepository
         $this->clientService = $clientService;
     }
 
+    public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null, ?TenantInterface $tenant = null)
+    {
+        if (null == $tenant) {
+            $tenant = $this->clientService->getTenant();
+        }
+
+        return parent::findBy([
+            ...$criteria,
+            ...['tenant' => $tenant],
+        ], $orderBy, $limit, $offset);
+    }
+
+    
+    public function findOneBy(array $criteria, ?array $orderBy = null, ?TenantInterface $tenant = null)
+    {
+        if (null == $tenant) {
+            $tenant = $this->clientService->getTenant();
+        }
+
+        return parent::findOneBy([
+            ...$criteria,
+            ...['tenant' => $tenant],
+        ], $orderBy);
+    }
+
+    public function find($id, $lockMode = null, $lockVersion = null)
+    {
+        return $this->findOneBy(['id' => $id]);
+    }
+
     public function createQueryBuilder($alias, $indexBy = null, ?TenantInterface $tenant = null): ?QueryBuilder
     {
         if (null == $tenant) {
