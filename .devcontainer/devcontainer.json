@@ -5,9 +5,6 @@
     ],
     "service": "app",
     "workspaceFolder": "/workspace",
-    "settings": {
-        "terminal.integrated.shell.linux": null
-    },
     "extensions": [
         "mblode.twig-language-2",
         "sibiraj-s.vscode-scss-formatter",

@@ -14,11 +14,15 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class TenantService
 {
-    /** @var string */
-    private $saasClientEntity;
+    private string $saasClientEntity;
 
-    public function __construct(ContainerInterface $container, private EntityManagerInterface $em, private RequestStack $requestStack)
-    {
+    private ?TenantInterface $tenant = null;
+
+    public function __construct(
+        ContainerInterface $container, 
+        private EntityManagerInterface $em, 
+        private RequestStack $requestStack
+    ) {
         $this->em = $em;
         $this->saasClientEntity = $container->getParameter('saas_provider.client_entity');
         $this->requestStack = $requestStack;
@@ -45,12 +49,7 @@ class TenantService
      */
     public function getTenant(): ?TenantInterface
     {
-        $tenant = $this->discoverClient();
-        if (null == $tenant) {
-            return null;
-        }
-
-        return $tenant;
+        return $this->tenant ?? $this->discoverClient();
     }
 
     /**
@@ -79,5 +78,17 @@ class TenantService
         }
 
         return $client;
+    }
+
+    /**
+     * Set the value of tenant
+     *
+     * @return  self
+     */ 
+    public function setTenant($tenant)
+    {
+        $this->tenant = $tenant;
+
+        return $this;
     }
 }
