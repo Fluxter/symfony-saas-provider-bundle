@@ -20,6 +20,8 @@ composer require fluxter/saas-provider-bundle
     saas_provider:
       client_entity: App\Entity\User
       global_url: app.yourdomain.tld
+      exclude_routes:
+        - app_global_thingy
     ```
 1. Configure your firewall to the correct voter mode
     ```yaml

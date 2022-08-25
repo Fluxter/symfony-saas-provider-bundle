@@ -27,5 +27,8 @@ class SaasProviderExtension extends Extension
         }
 
         $container->setParameter('saas_provider.client_entity', $config['client_entity']);
+        if (array_key_exists("global_url", $config)) {
+            $container->setParameter('saas_provider.global_url', $config['global_url']);
+        }
     }
 }

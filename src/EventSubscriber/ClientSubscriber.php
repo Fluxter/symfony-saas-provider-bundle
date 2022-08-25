@@ -19,6 +19,7 @@ use Twig\Environment as TwigEnvironment;
 class ClientSubscriber implements EventSubscriberInterface
 {
     private array $excludeRoutes = [];
+    private ?string $globalUrl = null;
 
     public function __construct(
         private TenantService $clientService,
@@ -33,6 +34,9 @@ class ClientSubscriber implements EventSubscriberInterface
 
         if ($container->hasParameter('saas_provider.exclude_routes')) {
             $this->excludeRoutes = $container->getParameter('saas_provider.exclude_routes');
+        }
+        if ($container->hasParameter('saas_provider.global_url')) {
+            $this->globalUrl = $container->getParameter('saas_provider.global_url');
         }
     }
 
@@ -64,6 +68,11 @@ class ClientSubscriber implements EventSubscriberInterface
             $this->twig->addGlobal('tenant_object', $client);
             $this->twig->addGlobal('tenant', $this->dynamicSaasClientAccessorService);
         } else {
+            if ($event->getRequest()->getHttpHost() == $this->globalUrl) {
+                $this->logger->debug("global url hit!");
+                return;
+            }
+            
             $route = $event->getRequest()->get('_route');
             foreach ($this->excludeRoutes as $pattern) {
                 if (preg_match("/${pattern}/", $route)) {
