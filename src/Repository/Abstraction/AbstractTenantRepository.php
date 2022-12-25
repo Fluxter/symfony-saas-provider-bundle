@@ -26,7 +26,7 @@ abstract class AbstractTenantRepository extends ServiceEntityRepository
         $this->clientService = $clientService;
     }
 
-    public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null, ?TenantInterface $tenant = null)
+    public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null, ?TenantInterface $tenant = null): array
     {
         if (null == $tenant) {
             $tenant = $this->clientService->getTenant();
@@ -39,7 +39,7 @@ abstract class AbstractTenantRepository extends ServiceEntityRepository
     }
 
     
-    public function findOneBy(array $criteria, ?array $orderBy = null, ?TenantInterface $tenant = null)
+    public function findOneBy(array $criteria, ?array $orderBy = null, ?TenantInterface $tenant = null): ?object
     {
         if (null == $tenant) {
             $tenant = $this->clientService->getTenant();
@@ -51,7 +51,7 @@ abstract class AbstractTenantRepository extends ServiceEntityRepository
         ], $orderBy);
     }
 
-    public function find($id, $lockMode = null, $lockVersion = null)
+    public function find($id, $lockMode = null, $lockVersion = null): ?object
     {
         return $this->findOneBy(['id' => $id]);
     }
