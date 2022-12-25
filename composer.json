@@ -22,7 +22,8 @@
     }],
     "autoload": {
         "psr-4": {
-            "Fluxter\\SaasProviderBundle\\": "src/"
+            "Fluxter\\SaasProviderBundle\\": "src/",
+            "Fluxter\\SaasProviderBundle\\Tests\\": "tests/"
         }
     }
 }
