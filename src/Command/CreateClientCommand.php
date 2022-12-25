@@ -12,7 +12,7 @@ use Fluxter\SaasProviderBundle\Model\TenantInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class CreateClientCommand extends Command
@@ -22,12 +22,12 @@ class CreateClientCommand extends Command
     private string $saasClientEntity;
 
     public function __construct(
-        ContainerInterface $container,
+        ParameterBagInterface $paramBag,
         private EntityManagerInterface $em,
         private EventDispatcherInterface $eventDispatcher
     ) {
         parent::__construct();
-        $this->saasClientEntity = $container->getParameter('saas_provider.client_entity');
+        $this->saasClientEntity = $paramBag->get('saas_provider.client_entity');
     }
 
     protected function configure()
@@ -38,7 +38,7 @@ class CreateClientCommand extends Command
         ;
     }
 
-    protected function execute(\Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output)
+    protected function execute(\Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output): int
     {
         /** @var TenantInterface */
         $client = new $this->saasClientEntity();

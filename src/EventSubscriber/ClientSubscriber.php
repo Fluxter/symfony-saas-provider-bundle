@@ -10,7 +10,7 @@ use Fluxter\SaasProviderBundle\Model\Exception\ClientCouldNotBeDiscoveredExcepti
 use Fluxter\SaasProviderBundle\Service\DynamicSaasClientAccessorService;
 use Fluxter\SaasProviderBundle\Service\TenantService;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -25,24 +25,22 @@ class ClientSubscriber implements EventSubscriberInterface
         private TwigEnvironment $twig,
         private DynamicSaasClientAccessorService $dynamicSaasClientAccessorService,
         private LoggerInterface $logger,
-        ContainerInterface $container)
+        ParameterBagInterface $paramBag)
     {
         $this->clientService = $clientService;
         $this->twig = $twig;
         $this->dynamicSaasClientAccessorService = $dynamicSaasClientAccessorService;
 
-        if ($container->hasParameter('saas_provider.exclude_routes')) {
-            $this->excludeRoutes = $container->getParameter('saas_provider.exclude_routes');
+        if ($paramBag->has('saas_provider.exclude_routes')) {
+            $this->excludeRoutes = $paramBag->get('saas_provider.exclude_routes');
         }
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
-        $events = [
+        return [
             KernelEvents::REQUEST => ['checkSaasClient', 0],
         ];
-
-        return $events;
     }
 
     /**

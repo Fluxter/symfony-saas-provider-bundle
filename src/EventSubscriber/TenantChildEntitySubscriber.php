@@ -18,7 +18,7 @@ class TenantChildEntitySubscriber implements EventSubscriberInterface
     {
     }
 
-    public function getSubscribedEvents()
+    public function getSubscribedEvents(): array
     {
         return [
             Events::prePersist => 'prePersist',
