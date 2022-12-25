@@ -20,7 +20,7 @@ class TenantChildVoter extends Voter
         $this->_clientService = $clientService;
     }
 
-    protected function supports($attribute, $subject)
+    protected function supports($attribute, $subject): bool
     {
         if (!$subject instanceof TenantChildInterface) {
             return false;

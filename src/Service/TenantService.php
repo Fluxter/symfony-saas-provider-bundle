@@ -9,7 +9,7 @@ namespace Fluxter\SaasProviderBundle\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Fluxter\SaasProviderBundle\Model\TenantChildInterface;
 use Fluxter\SaasProviderBundle\Model\TenantInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class TenantService
@@ -19,12 +19,12 @@ class TenantService
     private ?TenantInterface $tenant = null;
 
     public function __construct(
-        ContainerInterface $container, 
+        ParameterBagInterface $paramBag,
         private EntityManagerInterface $em, 
         private RequestStack $requestStack
     ) {
         $this->em = $em;
-        $this->saasClientEntity = $container->getParameter('saas_provider.client_entity');
+        $this->saasClientEntity = $paramBag->get('saas_provider.client_entity');
         $this->requestStack = $requestStack;
     }
 
