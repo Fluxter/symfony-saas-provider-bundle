@@ -35,8 +35,8 @@ class ClientSubscriber implements EventSubscriberInterface
         if ($paramBag->has('saas_provider.exclude_routes')) {
             $this->excludeRoutes = $paramBag->get('saas_provider.exclude_routes');
         }
-        if ($container->hasParameter('saas_provider.global_url')) {
-            $this->globalUrl = $container->getParameter('saas_provider.global_url');
+        if ($paramBag->has('saas_provider.global_url')) {
+            $this->globalUrl = $paramBag->get('saas_provider.global_url');
         }
     }
 
