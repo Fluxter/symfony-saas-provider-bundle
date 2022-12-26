@@ -15,7 +15,7 @@ use Symfony\Component\Form\Guess\TypeGuess;
 
 class TenantChildEntityTypeGuesser extends DoctrineOrmTypeGuesser implements FormTypeGuesserInterface
 {
-    public function guessType($class, $property): ?Guess\TypeGuess
+    public function guessType($class, $property): ?TypeGuess
     {
         if (!$ret = $this->getMetadata($class)) {
             return null;
@@ -36,5 +36,7 @@ class TenantChildEntityTypeGuesser extends DoctrineOrmTypeGuesser implements For
                 ], Guess::HIGH_CONFIDENCE);
             }
         }
+
+        return null;
     }
 }
