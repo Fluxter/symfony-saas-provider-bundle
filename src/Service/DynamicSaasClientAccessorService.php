@@ -18,6 +18,11 @@ class DynamicSaasClientAccessorService
     {
         $client = $this->_clientService->getTenant();
 
+        $method = $name;
+        if (method_exists($client, $method)) {
+            return $client->$method();
+        }
+
         $method = "get$name";
         if (method_exists($client, $method)) {
             return $client->$method();
