@@ -35,7 +35,7 @@ class TenantChildVoter extends Voter
      *
      * @return void
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         if (!$this->_clientService->getTenant()) {
             return false;
