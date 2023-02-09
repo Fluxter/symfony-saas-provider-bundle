@@ -73,7 +73,7 @@ class ClientSubscriber implements EventSubscriberInterface
             
             $route = $event->getRequest()->get('_route');
             foreach ($this->excludeRoutes as $pattern) {
-                if (preg_match("/${pattern}/", $route)) {
+                if (preg_match("/{$pattern}/", $route)) {
                     $this->logger->debug("Found $route in saas_provider.exclude_routes");
 
                     return;
