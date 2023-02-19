@@ -61,19 +61,27 @@ abstract class AbstractTenantRepository extends ServiceEntityRepository
         return $this->findOneBy(['id' => $id]);
     }
 
-    public function createQueryBuilder($alias, $indexBy = null, ?TenantInterface $tenant = null): ?QueryBuilder
+    protected function getTenantRelationPropertyName(): string
+    {
+        return "tenant";
+    }
+
+    public
+    function createQueryBuilder($alias, $indexBy = null, ?TenantInterface $tenant = null): ?QueryBuilder
     {
         if (null == $tenant) {
             $tenant = $this->clientService->getTenant();
         }
 
+        $paramName = "saasTenantId";
         return parent::createQueryBuilder($alias, $indexBy)
-            ->andWhere($alias . '.tenant = :saasTenantId')
-            ->setParameter('saasTenantId', $tenant->getId());
+            ->andWhere(sprintf($alias . '.%s = :%s', $this->getTenantRelationPropertyName() . $paramName))
+            ->setParameter($paramName, $tenant->getId());
     }
 
-    // THIS IS ONLY FOR CONSOLE COMMANDS OR SOMETHING!
-    public function createGlobalQueryBuilder($alias, $indexBy = null)
+// THIS IS ONLY FOR CONSOLE COMMANDS OR SOMETHING!
+    public
+    function createGlobalQueryBuilder($alias, $indexBy = null)
     {
         return parent::createQueryBuilder($alias, $indexBy);
     }
