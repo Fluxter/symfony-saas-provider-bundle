@@ -39,7 +39,7 @@ abstract class AbstractTenantRepository extends ServiceEntityRepository
 
         return parent::findBy([
             ...$criteria,
-            ...['tenant' => $tenant],
+            ...[$this->getTenantRelationPropertyName() => $tenant],
         ], $orderBy, $limit, $offset);
     }
 
@@ -52,7 +52,7 @@ abstract class AbstractTenantRepository extends ServiceEntityRepository
 
         return parent::findOneBy([
             ...$criteria,
-            ...['tenant' => $tenant],
+            ...[$this->getTenantRelationPropertyName() => $tenant],
         ], $orderBy);
     }
 
