@@ -79,8 +79,7 @@ abstract class AbstractTenantRepository extends ServiceEntityRepository
     }
 
 // THIS IS ONLY FOR CONSOLE COMMANDS OR SOMETHING!
-    public
-    function createGlobalQueryBuilder($alias, $indexBy = null)
+    public function createGlobalQueryBuilder($alias, $indexBy = null)
     {
         return parent::createQueryBuilder($alias, $indexBy);
     }
