@@ -32,10 +32,11 @@ class TenantChildEntitySubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ($entity->getTenant()) {
+        $tenant = $this->tenantService->getTenant();
+        if (!$tenant) {
             return;
         }
 
-        $entity->setTenant($this->tenantService->getTenant());
+        $entity->setTenant($tenant);
     }
 }
