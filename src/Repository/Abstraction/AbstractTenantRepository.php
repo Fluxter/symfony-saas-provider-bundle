@@ -75,7 +75,7 @@ abstract class AbstractTenantRepository extends ServiceEntityRepository
 
         $paramName = "saasTenantId";
         return parent::createQueryBuilder($alias, $indexBy)
-            ->andWhere(sprintf($alias . '.%s = :%s', $this->getTenantRelationPropertyName() . $paramName))
+            ->andWhere(sprintf($alias . '.%s = :%s', $this->getTenantRelationPropertyName(), $paramName))
             ->setParameter($paramName, $tenant->getId());
     }
 
