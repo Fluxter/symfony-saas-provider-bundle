@@ -13,5 +13,5 @@ interface TenantChildInterface
 {
     public function getTenant(): ?TenantInterface;
 
-    public function setTenant(TenantInterface $client);
+    public function setTenant(TenantInterface $tenant);
 }
