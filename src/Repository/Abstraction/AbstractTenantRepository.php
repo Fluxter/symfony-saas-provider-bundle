@@ -13,7 +13,7 @@ use Fluxter\SaasProviderBundle\Model\TenantInterface;
 use Fluxter\SaasProviderBundle\Service\TenantService;
 
 /**
- * @template T of TenantChildInterface
+ * @template T
  * @extends ServiceEntityRepository<T>
  */
 abstract class AbstractTenantRepository extends ServiceEntityRepository
