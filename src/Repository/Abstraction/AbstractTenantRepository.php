@@ -8,9 +8,14 @@ namespace Fluxter\SaasProviderBundle\Repository\Abstraction;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use Fluxter\SaasProviderBundle\Model\TenantChildInterface;
 use Fluxter\SaasProviderBundle\Model\TenantInterface;
 use Fluxter\SaasProviderBundle\Service\TenantService;
 
+/**
+ * @template T of TenantChildInterface
+ * @extends ServiceEntityRepository<T>
+ */
 abstract class AbstractTenantRepository extends ServiceEntityRepository
 {
     protected TenantService $clientService;
@@ -38,7 +43,7 @@ abstract class AbstractTenantRepository extends ServiceEntityRepository
         ], $orderBy, $limit, $offset);
     }
 
-    
+
     public function findOneBy(array $criteria, ?array $orderBy = null, ?TenantInterface $tenant = null): ?object
     {
         if (null == $tenant) {
