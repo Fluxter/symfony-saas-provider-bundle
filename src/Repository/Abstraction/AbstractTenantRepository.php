@@ -66,8 +66,7 @@ abstract class AbstractTenantRepository extends ServiceEntityRepository
         return "tenant";
     }
 
-    public
-    function createQueryBuilder($alias, $indexBy = null, ?TenantInterface $tenant = null): ?QueryBuilder
+    public function createQueryBuilder($alias, $indexBy = null, ?TenantInterface $tenant = null): ?QueryBuilder
     {
         if (null == $tenant) {
             $tenant = $this->clientService->getTenant();
