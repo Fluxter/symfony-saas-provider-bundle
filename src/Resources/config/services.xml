@@ -29,8 +29,6 @@
         </service>
 
         <!-- Eventlistener -->
-        <service id="Fluxter\SaasProviderBundle\EventSubscriber\TenantChildEntitySubscriber" autowire="true">
-            <tag name="doctrine.event_listener" />
-        </service>
+        <service id="Fluxter\SaasProviderBundle\EventSubscriber\TenantChildEntitySubscriber" autowire="true" autoconfigure="true" />
     </services>
 </container>
