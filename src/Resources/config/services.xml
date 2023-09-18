@@ -30,7 +30,7 @@
 
         <!-- Eventlistener -->
         <service id="Fluxter\SaasProviderBundle\EventSubscriber\TenantChildEntitySubscriber" autowire="true">
-            <tag name="doctrine.event_subscriber" />
+            <tag name="doctrine.event_listener" />
         </service>
     </services>
 </container>
