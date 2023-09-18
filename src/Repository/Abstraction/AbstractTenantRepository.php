@@ -1,16 +1,19 @@
 <?php
 
 /*
+ * This file is part of the SaasProviderBundle package.
  * (c) Fluxter <http://fluxter.net/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Fluxter\SaasProviderBundle\Repository\Abstraction;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use Fluxter\SaasProviderBundle\Model\TenantChildInterface;
 use Fluxter\SaasProviderBundle\Model\TenantInterface;
 use Fluxter\SaasProviderBundle\Service\TenantService;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @template T
@@ -25,7 +28,7 @@ abstract class AbstractTenantRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('e')->getQuery()->getResult();
     }
 
-    /** @required */
+    #[Required]
     public function setTenantService(TenantService $clientService)
     {
         $this->clientService = $clientService;
@@ -42,7 +45,6 @@ abstract class AbstractTenantRepository extends ServiceEntityRepository
             ...[$this->getTenantRelationPropertyName() => $tenant],
         ], $orderBy, $limit, $offset);
     }
-
 
     public function findOneBy(array $criteria, ?array $orderBy = null, ?TenantInterface $tenant = null): ?object
     {
@@ -61,26 +63,27 @@ abstract class AbstractTenantRepository extends ServiceEntityRepository
         return $this->findOneBy(['id' => $id]);
     }
 
-    protected function getTenantRelationPropertyName(): string
-    {
-        return "tenant";
-    }
-
     public function createQueryBuilder($alias, $indexBy = null, ?TenantInterface $tenant = null): ?QueryBuilder
     {
         if (null == $tenant) {
             $tenant = $this->clientService->getTenant();
         }
 
-        $paramName = "saasTenantId";
+        $paramName = 'saasTenantId';
+
         return parent::createQueryBuilder($alias, $indexBy)
             ->andWhere(sprintf($alias . '.%s = :%s', $this->getTenantRelationPropertyName(), $paramName))
             ->setParameter($paramName, $tenant->getId());
     }
 
-// THIS IS ONLY FOR CONSOLE COMMANDS OR SOMETHING!
+    // THIS IS ONLY FOR CONSOLE COMMANDS OR SOMETHING!
     public function createGlobalQueryBuilder($alias, $indexBy = null)
     {
         return parent::createQueryBuilder($alias, $indexBy);
+    }
+
+    protected function getTenantRelationPropertyName(): string
+    {
+        return 'tenant';
     }
 }
