@@ -10,12 +10,14 @@ use Doctrine\ORM\EntityManagerInterface;
 use Fluxter\SaasProviderBundle\Model\Event\ConsoleClientCreationEvent;
 use Fluxter\SaasProviderBundle\Model\TenantInterface;
 use Fluxter\SaasProviderBundle\Service\TenantService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
+#[AsCommand("fluxter:saas:provider:create-client", 'Creates a new SaaS client')]
 class CreateClientCommand extends Command
 {
     protected static $defaultName = '';
@@ -35,11 +37,9 @@ class CreateClientCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Creates a new SaaS client')
-            ->setName("fx:saas:create")
             ->setAliases([
-                "fluxter:saas:provider:create-client",
-                "fx:saas:provider:create-client"
+                "fluxter:saas:create-client",
+                "fx:saas:create-client"
             ])
             ->addArgument('url', InputArgument::REQUIRED, 'The url without www and http')
         ;

@@ -14,7 +14,7 @@ use Symfony\Component\Form\AbstractTypeExtension;
 
 class ClientEntityTypeExtension extends AbstractTypeExtension
 {
-    public function buildForm(\Symfony\Component\Form\FormBuilderInterface $builder, array $options)
+    public function buildForm(\Symfony\Component\Form\FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
     }
