@@ -24,7 +24,7 @@
         <service id="Fluxter\SaasProviderBundle\Form\Type\ClientEntityType" autowire="true" autoconfigure="true" />
 
         <!-- Eventlistener -->
-        <service id="Fluxter\SaasProviderBundle\EventSubscriber\ClientSubscriber" autowire="true">
+        <service id="Fluxter\SaasProviderBundle\EventSubscriber\TenantSubscriber" autowire="true">
             <tag name="kernel.event_subscriber" />
         </service>
 
