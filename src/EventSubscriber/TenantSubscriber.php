@@ -6,7 +6,7 @@
 
 namespace Fluxter\SaasProviderBundle\EventSubscriber;
 
-use Fluxter\SaasProviderBundle\Model\Exception\ClientCouldNotBeDiscoveredException;
+use Fluxter\SaasProviderBundle\Model\Exception\TenantCouldNotBeDiscoveredException;
 use Fluxter\SaasProviderBundle\Service\DynamicSaasClientAccessorService;
 use Fluxter\SaasProviderBundle\Service\TenantService;
 use Psr\Log\LoggerInterface;
@@ -14,18 +14,19 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment as TwigEnvironment;
 
-class ClientSubscriber implements EventSubscriberInterface
+class TenantSubscriber implements EventSubscriberInterface
 {
     private array $excludeRoutes = [];
     private ?string $globalUrl = null;
 
     public function __construct(
-        private TenantService $clientService,
-        private TwigEnvironment $twig,
-        private DynamicSaasClientAccessorService $dynamicSaasClientAccessorService,
-        private LoggerInterface $logger,
+        private readonly TenantService $clientService,
+        private readonly TwigEnvironment $twig,
+        private readonly DynamicSaasClientAccessorService $dynamicSaasClientAccessorService,
+        private readonly LoggerInterface $logger,
         ParameterBagInterface $paramBag)
     {
         $this->clientService = $clientService;
@@ -43,7 +44,7 @@ class ClientSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::REQUEST => ['checkSaasClient', 0],
+            KernelEvents::REQUEST => ['checkTenant', 0],
         ];
     }
 
@@ -53,7 +54,7 @@ class ClientSubscriber implements EventSubscriberInterface
      *
      * @return void
      */
-    public function checkSaasClient(KernelEvent $event)
+    public function checkTenant(KernelEvent $event)
     {
         if (!$event->isMainRequest()) {
             return;
@@ -81,7 +82,7 @@ class ClientSubscriber implements EventSubscriberInterface
                 $this->logger->debug("$route didn´t match pattern $pattern");
             }
 
-            throw new ClientCouldNotBeDiscoveredException();
+            throw new TenantCouldNotBeDiscoveredException();
         }
     }
 }
