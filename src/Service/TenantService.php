@@ -66,6 +66,27 @@ class TenantService
 
         return $router;
     }
+    
+
+    public function setRouterContext(?TenantInterface $tenant = null)
+    {
+        $this->setRouterContext($tenant);
+        if ($this->originalRouterContext) {
+            throw new \Exception('Cannot set new context, please reset it first with resetRouterContext()');
+        }
+        $this->originalRouterContext = clone $this->router->getContext();
+        $context = $this->router->getContext();
+        $tenant = $tenant ?? $this->getTenant();
+        $context->setHost($tenant->getUrl());
+        $context->setScheme('https');
+
+        $request = $this->requestStack->getCurrentRequest();
+        if ($request) {
+            $context->setScheme($request->getScheme());
+            $context->setHttpPort($request->getPort());
+            $context->setHttpsPort($request->getPort());
+        }
+    }
 
     public function createClient(array $parameters): TenantInterface
     {
