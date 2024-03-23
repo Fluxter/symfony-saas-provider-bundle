@@ -29,10 +29,6 @@ class TenantSubscriber implements EventSubscriberInterface
         private readonly LoggerInterface $logger,
         ParameterBagInterface $paramBag)
     {
-        $this->clientService = $clientService;
-        $this->twig = $twig;
-        $this->dynamicSaasClientAccessorService = $dynamicSaasClientAccessorService;
-
         if ($paramBag->has('saas_provider.exclude_routes')) {
             $this->excludeRoutes = $paramBag->get('saas_provider.exclude_routes');
         }
