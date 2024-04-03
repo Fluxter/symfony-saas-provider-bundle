@@ -70,7 +70,6 @@ class TenantService
 
     public function setRouterContext(?TenantInterface $tenant = null)
     {
-        $this->setRouterContext($tenant);
         if ($this->originalRouterContext) {
             throw new \Exception('Cannot set new context, please reset it first with resetRouterContext()');
         }
