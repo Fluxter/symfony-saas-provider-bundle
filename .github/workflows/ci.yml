@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php }} / Symfony ${{ matrix.symfony }}${{ matrix.dependencies == 'lowest' && ' (lowest)' || '' }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Symfony 7 (7.4 LTS)
+          - { php: '8.2', symfony: '7.4.*' }
+          - { php: '8.3', symfony: '7.4.*' }
+          - { php: '8.4', symfony: '7.4.*' }
+          # Symfony 8 (8.0 is EOL and blocked by security advisories)
+          - { php: '8.4', symfony: '8.1.*' }
+          - { php: '8.5', symfony: '8.1.*' }
+          # Lowest supported versions of all dependencies
+          # (they are EOL and have security advisories, so blocking is disabled - fine for testing only)
+          - { php: '8.2', symfony: '7.0.*', dependencies: 'lowest', composer-options: '--no-blocking' }
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: pdo_sqlite
+          coverage: none
+          tools: flex
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
+        env:
+          # symfony/flex restricts all symfony/* packages to this version
+          SYMFONY_REQUIRE: ${{ matrix.symfony }}
+        with:
+          dependency-versions: ${{ matrix.dependencies || 'highest' }}
+          composer-options: ${{ matrix.composer-options }}
+
+      - name: Run tests
+        run: vendor/bin/phpunit
+
+  coding-standards:
+    name: Coding standards
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          # The lowest supported PHP version, so the fixer does not suggest newer syntax
+          php-version: '8.2'
+          coverage: none
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
+
+      - name: Check coding standards
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff --verbose

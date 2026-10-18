@@ -9,8 +9,8 @@
 
 namespace Fluxter\SaasProviderBundle\Entity;
 
-use Fluxter\SaasProviderBundle\Model\TenantInterface;
 use Fluxter\SaasProviderBundle\Model\TenantChildInterface;
+use Fluxter\SaasProviderBundle\Model\TenantInterface;
 
 abstract class AbstractSaasClient implements TenantInterface
 {
@@ -20,9 +20,17 @@ abstract class AbstractSaasClient implements TenantInterface
         return [];
     }
 
-    public function addParamter(TenantChildInterface $param)
+    public function addParameter(TenantChildInterface $parameter)
     {
         // Todo
+    }
+
+    /**
+     * @deprecated misspelled, use addParameter() instead
+     */
+    public function addParamter(TenantChildInterface $param)
+    {
+        return $this->addParameter($param);
     }
 
     public function removeParameter(TenantChildInterface $parameter)

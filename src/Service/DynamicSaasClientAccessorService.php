@@ -9,6 +9,8 @@
 
 namespace Fluxter\SaasProviderBundle\Service;
 
+use Symfony\Contracts\Service\Attribute\Required;
+
 class DynamicSaasClientAccessorService
 {
     /** @var TenantService */
@@ -30,8 +32,8 @@ class DynamicSaasClientAccessorService
         throw new \Exception("Unknown Settings function / variable: {$name}!");
     }
 
-    /** @required */
-    public function setClientService(TenantService $clientService)
+    #[Required]
+    public function setClientService(TenantService $clientService): void
     {
         $this->_clientService = $clientService;
     }
