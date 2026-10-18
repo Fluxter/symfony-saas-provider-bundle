@@ -12,6 +12,7 @@ namespace Fluxter\SaasProviderBundle\Tests\Command;
 use Doctrine\ORM\EntityManagerInterface;
 use Fluxter\SaasProviderBundle\Command\CreateClientCommand;
 use Fluxter\SaasProviderBundle\Model\Event\ConsoleClientCreationEvent;
+use Fluxter\SaasProviderBundle\Service\TenantService;
 use Fluxter\SaasProviderBundle\Tests\Fixtures\Entity\Tenant;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
@@ -22,9 +23,10 @@ class CreateClientCommandTest extends TestCase
 {
     public function testNameAndDescription(): void
     {
-        $command = new CreateClientCommand($this->createStub(EntityManagerInterface::class), new EventDispatcher(), Tenant::class);
+        $command = new CreateClientCommand($this->createStub(EntityManagerInterface::class), new EventDispatcher(), $this->createStub(TenantService::class), Tenant::class);
 
         $this->assertSame('fluxter:saas:provider:create-client', $command->getName());
+        $this->assertSame(['fluxter:saas:create-client', 'fx:saas:create-client'], $command->getAliases());
         $this->assertSame('Creates a new SaaS client', $command->getDescription());
         $this->assertTrue($command->getDefinition()->getArgument('url')->isRequired());
     }
@@ -46,7 +48,13 @@ class CreateClientCommandTest extends TestCase
             $event->getTenant()->setName($event->console()->ask('Name'));
         });
 
-        $tester = new CommandTester(new CreateClientCommand($em, $dispatcher, Tenant::class));
+        // The new client is the current tenant while it gets created, e.g. for children created by listeners
+        $tenantService = $this->createMock(TenantService::class);
+        $tenantService->expects($this->once())
+            ->method('setTenant')
+            ->with($this->callback(static fn ($client) => $client instanceof Tenant && 'acme.example.com' === $client->getUrl()));
+
+        $tester = new CommandTester(new CreateClientCommand($em, $dispatcher, $tenantService, Tenant::class));
         $tester->setInputs(['ACME Corp.']);
         $tester->execute(['url' => 'acme.example.com']);
 

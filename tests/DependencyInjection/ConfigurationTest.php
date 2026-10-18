@@ -19,7 +19,7 @@ class ConfigurationTest extends TestCase
     public function testMinimalConfiguration(): void
     {
         $this->assertSame(
-            ['client_entity' => 'App\Entity\Tenant', 'exclude_routes' => []],
+            ['client_entity' => 'App\Entity\Tenant', 'global_url' => null, 'exclude_routes' => []],
             $this->process([['client_entity' => 'App\Entity\Tenant']]),
         );
     }
@@ -29,6 +29,13 @@ class ConfigurationTest extends TestCase
         $config = $this->process([['client_entity' => 'App\Entity\Tenant', 'exclude_routes' => ['^public_', '^_wdt']]]);
 
         $this->assertSame(['^public_', '^_wdt'], $config['exclude_routes']);
+    }
+
+    public function testGlobalUrl(): void
+    {
+        $config = $this->process([['client_entity' => 'App\Entity\Tenant', 'global_url' => 'app.example.com']]);
+
+        $this->assertSame('app.example.com', $config['global_url']);
     }
 
     public function testLaterConfigsOverrideClientEntity(): void

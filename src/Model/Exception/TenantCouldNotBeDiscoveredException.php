@@ -11,7 +11,7 @@ namespace Fluxter\SaasProviderBundle\Model\Exception;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class ClientCouldNotBeDiscoveredException extends NotFoundHttpException
+class TenantCouldNotBeDiscoveredException extends NotFoundHttpException
 {
     public function __construct()
     {

@@ -10,23 +10,83 @@
 namespace Fluxter\SaasProviderBundle\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Fluxter\SaasProviderBundle\Model\Exception\TenantCouldNotBeDiscoveredException;
 use Fluxter\SaasProviderBundle\Model\TenantChildInterface;
 use Fluxter\SaasProviderBundle\Model\TenantInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
-class TenantService
+class TenantService implements ResetInterface
 {
+    private ?TenantInterface $tenant = null;
+
+    private ?RequestContext $originalRouterContext = null;
+
     /**
      * @param class-string<TenantInterface> $saasClientEntity
      */
     public function __construct(
         private EntityManagerInterface $em,
         private RequestStack $requestStack,
+        private readonly RouterInterface $router,
+        private readonly KernelInterface $kernel,
         private string $saasClientEntity,
     ) {
     }
 
-    public function createClient(array $parameters)
+    public function resetRouterContext()
+    {
+        if (!$this->originalRouterContext) {
+            return;
+        }
+        $this->router->setContext($this->originalRouterContext);
+        $this->originalRouterContext = null;
+    }
+
+    public function getTenantRouter(): RouterInterface
+    {
+        $router = clone $this->router;
+        $context = $router->getContext();
+        $tenant = $this->getTenant();
+        if (!$tenant) {
+            throw new TenantCouldNotBeDiscoveredException();
+        }
+        $context->setHost($this->getTenant()->getUrl());
+
+        if ('dev' == $this->kernel->getEnvironment()) {
+            $context
+                ->setScheme('http')
+            ;
+        } else {
+            $context->setScheme('https');
+        }
+
+        return $router;
+    }
+
+    public function setRouterContext(?TenantInterface $tenant = null)
+    {
+        if ($this->originalRouterContext) {
+            throw new \Exception('Cannot set new context, please reset it first with resetRouterContext()');
+        }
+        $this->originalRouterContext = clone $this->router->getContext();
+        $context = $this->router->getContext();
+        $tenant = $tenant ?? $this->getTenant();
+        $context->setHost($tenant->getUrl());
+        $context->setScheme('https');
+
+        $request = $this->requestStack->getCurrentRequest();
+        if ($request) {
+            $context->setScheme($request->getScheme());
+            $context->setHttpPort($request->getPort());
+            $context->setHttpsPort($request->getPort());
+        }
+    }
+
+    public function createClient(array $parameters): TenantInterface
     {
         /** @var TenantInterface $client */
         $client = new $this->saasClientEntity();
@@ -47,12 +107,7 @@ class TenantService
      */
     public function getTenant(): ?TenantInterface
     {
-        $tenant = $this->discoverClient();
-        if (null == $tenant) {
-            return null;
-        }
-
-        return $tenant;
+        return $this->tenant ?? $this->discoverClient();
     }
 
     /**
@@ -60,9 +115,13 @@ class TenantService
      * For example: "http://localhost:8000" returns "localhost"
      * https://test.test.de would return "test.test.de".
      */
-    public function getCurrentHttpHost(): string
+    public function getCurrentHttpHost(): ?string
     {
-        $url = $this->requestStack->getCurrentRequest()->getHttpHost();
+        $url = $this->requestStack->getCurrentRequest()?->getHttpHost();
+        if (!$url) {
+            return null;
+        }
+
         $url = strtolower($url);
         if (false !== strpos($url, ':')) {
             $url = preg_replace('/:(.*)/', '', $url);
@@ -71,19 +130,40 @@ class TenantService
         return strtolower($url);
     }
 
+    /**
+     * Set the value of tenant.
+     *
+     * @return self
+     */
+    public function setTenant($tenant)
+    {
+        $this->tenant = $tenant;
+
+        return $this;
+    }
+
+    /**
+     * Forgets the discovered tenant, so the next request (e.g. in a long-running worker) discovers it again.
+     */
+    public function reset(): void
+    {
+        $this->tenant = null;
+    }
+
     private function discoverClient(): ?TenantInterface
     {
-        // No request (e.g. console), so there is no host to discover the client by
-        if (null === $this->requestStack->getCurrentRequest()) {
+        $url = $this->getCurrentHttpHost();
+        if (!$url) {
             return null;
         }
 
-        $url = $this->getCurrentHttpHost();
         $repo = $this->em->getRepository($this->saasClientEntity);
         $client = $repo->findOneBy(['url' => $url]);
         if (null == $client) {
             return null;
         }
+
+        $this->tenant = $client;
 
         return $client;
     }

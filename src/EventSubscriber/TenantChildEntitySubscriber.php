@@ -9,7 +9,7 @@
 
 namespace Fluxter\SaasProviderBundle\EventSubscriber;
 
-use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PrePersistEventArgs;
 use Fluxter\SaasProviderBundle\Model\TenantChildInterface;
 use Fluxter\SaasProviderBundle\Service\TenantService;
 
@@ -19,23 +19,19 @@ use Fluxter\SaasProviderBundle\Service\TenantService;
  */
 class TenantChildEntitySubscriber
 {
-    public function __construct(private TenantService $tenantService)
+    public function __construct(private readonly TenantService $tenantService)
     {
     }
 
-    public function prePersist(LifecycleEventArgs $eventArgs): void
+    public function prePersist(PrePersistEventArgs $eventArgs): void
     {
         $entity = $eventArgs->getObject();
         if (!$entity instanceof TenantChildInterface) {
             return;
         }
 
-        if ($entity->getTenant()) {
-            return;
-        }
-
         $tenant = $this->tenantService->getTenant();
-        if (null === $tenant) {
+        if (!$tenant) {
             return;
         }
 

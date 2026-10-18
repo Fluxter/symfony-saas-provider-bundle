@@ -92,6 +92,28 @@ class BundleIntegrationTest extends KernelTestCase
         $this->assertSame('ok', $response->getContent());
     }
 
+    public function testGlobalUrlWorksWithoutTenant(): void
+    {
+        $response = $this->request('http://www.example.com/tenant-optional');
+
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode(), (string) $response->getContent());
+        $this->assertSame('no tenant', $response->getContent());
+    }
+
+    public function testRepositoryFindMethodsAreFilteredByTenant(): void
+    {
+        $repository = $this->em->getRepository(Note::class);
+        self::getContainer()->get('request_stack')->push(Request::create('http://tenant-a.example.com/'));
+
+        $this->assertSame(['note of a'], array_map(static fn (Note $note) => $note->getTitle(), $repository->findBy([])));
+        $this->assertNull($repository->findOneBy(['title' => 'note of b']));
+        $this->assertSame('note of a', $repository->findOneBy(['title' => 'note of a'])?->getTitle());
+
+        $noteOfB = $repository->createGlobalQueryBuilder('n')->andWhere("n.title = 'note of b'")->getQuery()->getSingleResult();
+        $this->assertNull($repository->find($noteOfB->getId()));
+        $this->assertSame('note of b', $repository->findOneBy(['title' => 'note of b'], null, $this->tenantB)?->getTitle());
+    }
+
     public function testRepositoryIsFilteredByTenantAndNewChildrenGetTheTenant(): void
     {
         $response = $this->request('http://tenant-b.example.com/notes');

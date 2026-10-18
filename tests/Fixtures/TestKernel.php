@@ -79,6 +79,7 @@ class TestKernel extends Kernel
 
         $container->extension('saas_provider', [
             'client_entity' => Tenant::class,
+            'global_url' => 'www.example.com',
             'exclude_routes' => ['^public_'],
         ]);
 

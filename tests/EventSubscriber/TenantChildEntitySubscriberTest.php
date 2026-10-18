@@ -29,12 +29,22 @@ class TenantChildEntitySubscriberTest extends TestCase
         $this->assertSame($tenant, $note->getTenant());
     }
 
-    public function testKeepsAlreadyAssignedTenant(): void
+    public function testOverwritesAssignedTenantWithCurrentTenant(): void
+    {
+        $current = new Tenant('tenant-a.example.com');
+        $note = (new Note('note'))->setTenant(new Tenant('tenant-b.example.com'));
+
+        $this->listener($current)->prePersist($this->args($note));
+
+        $this->assertSame($current, $note->getTenant());
+    }
+
+    public function testKeepsAssignedTenantWithoutCurrentTenant(): void
     {
         $assigned = new Tenant('tenant-b.example.com');
         $note = (new Note('note'))->setTenant($assigned);
 
-        $this->listener(new Tenant('tenant-a.example.com'))->prePersist($this->args($note));
+        $this->listener(null)->prePersist($this->args($note));
 
         $this->assertSame($assigned, $note->getTenant());
     }

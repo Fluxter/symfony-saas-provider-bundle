@@ -9,8 +9,8 @@
 
 namespace Fluxter\SaasProviderBundle\Tests\EventSubscriber;
 
-use Fluxter\SaasProviderBundle\EventSubscriber\ClientSubscriber;
-use Fluxter\SaasProviderBundle\Model\Exception\ClientCouldNotBeDiscoveredException;
+use Fluxter\SaasProviderBundle\EventSubscriber\TenantSubscriber;
+use Fluxter\SaasProviderBundle\Model\Exception\TenantCouldNotBeDiscoveredException;
 use Fluxter\SaasProviderBundle\Service\DynamicSaasClientAccessorService;
 use Fluxter\SaasProviderBundle\Service\TenantService;
 use Fluxter\SaasProviderBundle\Tests\Fixtures\Entity\Tenant;
@@ -22,7 +22,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 
-class ClientSubscriberTest extends TestCase
+class TenantSubscriberTest extends TestCase
 {
     private Environment $twig;
     private DynamicSaasClientAccessorService $accessor;
@@ -35,14 +35,14 @@ class ClientSubscriberTest extends TestCase
 
     public function testSubscribesToKernelRequest(): void
     {
-        $this->assertSame([KernelEvents::REQUEST => ['checkSaasClient', 0]], ClientSubscriber::getSubscribedEvents());
+        $this->assertSame([KernelEvents::REQUEST => ['checkTenant', 0]], TenantSubscriber::getSubscribedEvents());
     }
 
     public function testAddsTwigGlobalsWhenTenantIsFound(): void
     {
         $tenant = new Tenant('tenant-a.example.com');
 
-        $this->subscriber($tenant)->checkSaasClient($this->event('tenant_show'));
+        $this->subscriber($tenant)->checkTenant($this->event('tenant_show'));
 
         $globals = $this->twig->getGlobals();
         $this->assertSame($tenant, $globals['tenant_object']);
@@ -51,22 +51,30 @@ class ClientSubscriberTest extends TestCase
 
     public function testThrowsNotFoundWhenNoTenantIsFound(): void
     {
-        $this->expectException(ClientCouldNotBeDiscoveredException::class);
+        $this->expectException(TenantCouldNotBeDiscoveredException::class);
 
-        $this->subscriber(null, ['^public_'])->checkSaasClient($this->event('tenant_show'));
+        $this->subscriber(null, ['^public_'], 'app.example.com')->checkTenant($this->event('tenant_show'));
     }
 
     public function testThrowsNotFoundWithoutRoute(): void
     {
-        $this->expectException(ClientCouldNotBeDiscoveredException::class);
+        $this->expectException(TenantCouldNotBeDiscoveredException::class);
 
-        $this->subscriber(null, ['^public_'])->checkSaasClient($this->event(null));
+        $this->subscriber(null, ['^public_'])->checkTenant($this->event(null));
     }
 
     public function testExcludedRoutesWorkWithoutTenant(): void
     {
         $subscriber = $this->subscriber(null, ['^admin_', '^public_']);
-        $subscriber->checkSaasClient($this->event('public_health'));
+        $subscriber->checkTenant($this->event('public_health'));
+
+        $this->assertArrayNotHasKey('tenant_object', $this->twig->getGlobals());
+    }
+
+    public function testGlobalUrlWorksWithoutTenant(): void
+    {
+        $subscriber = $this->subscriber(null, [], 'app.example.com');
+        $subscriber->checkTenant($this->event('tenant_show', host: 'app.example.com'));
 
         $this->assertArrayNotHasKey('tenant_object', $this->twig->getGlobals());
     }
@@ -76,23 +84,23 @@ class ClientSubscriberTest extends TestCase
         $tenantService = $this->createMock(TenantService::class);
         $tenantService->expects($this->never())->method('getTenant');
 
-        $subscriber = new ClientSubscriber($tenantService, $this->twig, $this->accessor);
-        $subscriber->checkSaasClient($this->event('tenant_show', HttpKernelInterface::SUB_REQUEST));
+        $subscriber = new TenantSubscriber($tenantService, $this->twig, $this->accessor);
+        $subscriber->checkTenant($this->event('tenant_show', HttpKernelInterface::SUB_REQUEST));
 
         $this->assertArrayNotHasKey('tenant_object', $this->twig->getGlobals());
     }
 
-    private function subscriber(?Tenant $tenant, array $excludeRoutes = []): ClientSubscriber
+    private function subscriber(?Tenant $tenant, array $excludeRoutes = [], ?string $globalUrl = null): TenantSubscriber
     {
         $tenantService = $this->createStub(TenantService::class);
         $tenantService->method('getTenant')->willReturn($tenant);
 
-        return new ClientSubscriber($tenantService, $this->twig, $this->accessor, null, $excludeRoutes);
+        return new TenantSubscriber($tenantService, $this->twig, $this->accessor, null, $excludeRoutes, $globalUrl);
     }
 
-    private function event(?string $route, int $requestType = HttpKernelInterface::MAIN_REQUEST): RequestEvent
+    private function event(?string $route, int $requestType = HttpKernelInterface::MAIN_REQUEST, string $host = 'tenant-a.example.com'): RequestEvent
     {
-        $request = Request::create('http://tenant-a.example.com/');
+        $request = Request::create("http://$host/");
         if (null !== $route) {
             $request->attributes->set('_route', $route);
         }

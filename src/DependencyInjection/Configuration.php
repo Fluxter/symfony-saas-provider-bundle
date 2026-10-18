@@ -21,6 +21,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder->getRootNode()
             ->children()
                 ->scalarNode('client_entity')->isRequired()->cannotBeEmpty()->end()
+                ->scalarNode('global_url')->defaultNull()->end()
                 ->arrayNode('exclude_routes')->scalarPrototype()->end()->end()
             ->end();
 

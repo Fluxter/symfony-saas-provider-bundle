@@ -9,7 +9,7 @@
 
 namespace Fluxter\SaasProviderBundle\EventSubscriber;
 
-use Fluxter\SaasProviderBundle\Model\Exception\ClientCouldNotBeDiscoveredException;
+use Fluxter\SaasProviderBundle\Model\Exception\TenantCouldNotBeDiscoveredException;
 use Fluxter\SaasProviderBundle\Service\DynamicSaasClientAccessorService;
 use Fluxter\SaasProviderBundle\Service\TenantService;
 use Psr\Log\LoggerInterface;
@@ -19,37 +19,37 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Twig\Environment as TwigEnvironment;
 
-class ClientSubscriber implements EventSubscriberInterface
+class TenantSubscriber implements EventSubscriberInterface
 {
     private LoggerInterface $logger;
 
     /**
      * @param string[] $excludeRoutes regular expressions (without delimiters) of routes that work without a tenant
+     * @param ?string  $globalUrl     host that works without a tenant
      */
     public function __construct(
-        private TenantService $clientService,
-        private TwigEnvironment $twig,
-        private DynamicSaasClientAccessorService $dynamicSaasClientAccessorService,
+        private readonly TenantService $clientService,
+        private readonly TwigEnvironment $twig,
+        private readonly DynamicSaasClientAccessorService $dynamicSaasClientAccessorService,
         ?LoggerInterface $logger = null,
         private array $excludeRoutes = [],
+        private ?string $globalUrl = null,
     ) {
         $this->logger = $logger ?? new NullLogger();
     }
 
     public static function getSubscribedEvents(): array
     {
-        $events = [
-            KernelEvents::REQUEST => ['checkSaasClient', 0],
+        return [
+            KernelEvents::REQUEST => ['checkTenant', 0],
         ];
-
-        return $events;
     }
 
     /**
      * Discovers and checks if the current saas client exists by the current domain
      * and sets the session variables and updates them if needed.
      */
-    public function checkSaasClient(RequestEvent $event): void
+    public function checkTenant(RequestEvent $event): void
     {
         if (!$event->isMainRequest()) {
             return;
@@ -62,6 +62,12 @@ class ClientSubscriber implements EventSubscriberInterface
             $this->twig->addGlobal('tenant_object', $client);
             $this->twig->addGlobal('tenant', $this->dynamicSaasClientAccessorService);
         } else {
+            if (null !== $this->globalUrl && $event->getRequest()->getHttpHost() == $this->globalUrl) {
+                $this->logger->debug('global url hit!');
+
+                return;
+            }
+
             $route = (string) $event->getRequest()->attributes->get('_route');
             foreach ($this->excludeRoutes as $pattern) {
                 if (preg_match("/{$pattern}/", $route)) {
@@ -72,7 +78,7 @@ class ClientSubscriber implements EventSubscriberInterface
                 $this->logger->debug("$route didn´t match pattern $pattern");
             }
 
-            throw new ClientCouldNotBeDiscoveredException();
+            throw new TenantCouldNotBeDiscoveredException();
         }
     }
 }

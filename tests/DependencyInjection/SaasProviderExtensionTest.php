@@ -11,8 +11,8 @@ namespace Fluxter\SaasProviderBundle\Tests\DependencyInjection;
 
 use Fluxter\SaasProviderBundle\Command\CreateClientCommand;
 use Fluxter\SaasProviderBundle\DependencyInjection\SaasProviderExtension;
-use Fluxter\SaasProviderBundle\EventSubscriber\ClientSubscriber;
 use Fluxter\SaasProviderBundle\EventSubscriber\TenantChildEntitySubscriber;
+use Fluxter\SaasProviderBundle\EventSubscriber\TenantSubscriber;
 use Fluxter\SaasProviderBundle\Form\Extension\ClientEntityTypeExtension;
 use Fluxter\SaasProviderBundle\Form\Type\TenantChildType;
 use Fluxter\SaasProviderBundle\Form\TypeGuesser\TenantChildEntityTypeGuesser;
@@ -52,16 +52,18 @@ class SaasProviderExtensionTest extends TestCase
 
     public function testParametersAreSet(): void
     {
-        $container = $this->load(['client_entity' => Tenant::class, 'exclude_routes' => ['^public_', '^_profiler']]);
+        $container = $this->load(['client_entity' => Tenant::class, 'global_url' => 'app.example.com', 'exclude_routes' => ['^public_', '^_profiler']]);
 
         $this->assertSame(Tenant::class, $container->getParameter('saas_provider.client_entity'));
+        $this->assertSame('app.example.com', $container->getParameter('saas_provider.global_url'));
         $this->assertSame(['^public_', '^_profiler'], $container->getParameter('saas_provider.exclude_routes'));
     }
 
-    public function testExcludeRoutesDefaultsToEmptyList(): void
+    public function testOptionalParameterDefaults(): void
     {
         $container = $this->load(['client_entity' => Tenant::class]);
 
+        $this->assertNull($container->getParameter('saas_provider.global_url'));
         $this->assertSame([], $container->getParameter('saas_provider.exclude_routes'));
     }
 
@@ -85,13 +87,13 @@ class SaasProviderExtensionTest extends TestCase
     public static function provideServices(): iterable
     {
         yield 'command' => [CreateClientCommand::class, [], false];
-        yield 'tenant service' => [TenantService::class, [], true];
+        yield 'tenant service' => [TenantService::class, ['kernel.reset' => [['method' => 'reset']]], true];
         yield 'dynamic accessor' => [DynamicSaasClientAccessorService::class, [], true];
         yield 'form type' => [TenantChildType::class, ['form.type' => [[]]], false];
         yield 'form type extension' => [ClientEntityTypeExtension::class, ['form.type_extension' => [[]]], false];
         yield 'form type guesser' => [TenantChildEntityTypeGuesser::class, ['form.type_guesser' => [[]]], false];
         yield 'voter' => [TenantChildVoter::class, ['security.voter' => [[]]], false];
-        yield 'client subscriber' => [ClientSubscriber::class, ['kernel.event_subscriber' => [[]]], false];
+        yield 'tenant subscriber' => [TenantSubscriber::class, ['kernel.event_subscriber' => [[]]], false];
         yield 'tenant child listener' => [TenantChildEntitySubscriber::class, ['doctrine.event_listener' => [['event' => 'prePersist']]], false];
     }
 
@@ -110,7 +112,8 @@ class SaasProviderExtensionTest extends TestCase
             $this->assertSame('%saas_provider.client_entity%', $container->getDefinition($id)->getArgument('$saasClientEntity'));
         }
 
-        $this->assertSame('%saas_provider.exclude_routes%', $container->getDefinition(ClientSubscriber::class)->getArgument('$excludeRoutes'));
+        $this->assertSame('%saas_provider.exclude_routes%', $container->getDefinition(TenantSubscriber::class)->getArgument('$excludeRoutes'));
+        $this->assertSame('%saas_provider.global_url%', $container->getDefinition(TenantSubscriber::class)->getArgument('$globalUrl'));
     }
 
     private function load(array $config): ContainerBuilder

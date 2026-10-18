@@ -6,7 +6,7 @@
     "authors": [
         {
             "name": "Marcel",
-            "email": "mk@fluxter.net"
+            "email": "kontakt@fluxter.net"
         }
     ],
     "require": {
@@ -25,6 +25,7 @@
         "symfony/http-foundation": "^7.0 || ^8.0",
         "symfony/http-kernel": "^7.0 || ^8.0",
         "symfony/options-resolver": "^7.0 || ^8.0",
+        "symfony/routing": "^7.0 || ^8.0",
         "symfony/security-core": "^7.0 || ^8.0",
         "symfony/service-contracts": "^3.0",
         "symfony/twig-bundle": "^7.0 || ^8.0",

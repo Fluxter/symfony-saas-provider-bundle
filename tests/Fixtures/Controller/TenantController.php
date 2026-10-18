@@ -38,6 +38,12 @@ class TenantController extends TenantClientController
         return new JsonResponse(array_map(static fn (Note $note) => $note->getTitle(), $notes->findAll()));
     }
 
+    #[Route('/tenant-optional', name: 'tenant_optional')]
+    public function optional(): Response
+    {
+        return new Response($this->getTenant()?->getUrl() ?? 'no tenant');
+    }
+
     #[Route('/public/health', name: 'public_health')]
     public function health(): Response
     {

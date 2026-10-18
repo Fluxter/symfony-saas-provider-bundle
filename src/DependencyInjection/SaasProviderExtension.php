@@ -22,6 +22,7 @@ class SaasProviderExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter('saas_provider.client_entity', $config['client_entity']);
+        $container->setParameter('saas_provider.global_url', $config['global_url']);
         $container->setParameter('saas_provider.exclude_routes', $config['exclude_routes']);
 
         $loader = new PhpFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));

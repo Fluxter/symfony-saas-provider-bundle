@@ -12,6 +12,7 @@ namespace Fluxter\SaasProviderBundle\Command;
 use Doctrine\ORM\EntityManagerInterface;
 use Fluxter\SaasProviderBundle\Model\Event\ConsoleClientCreationEvent;
 use Fluxter\SaasProviderBundle\Model\TenantInterface;
+use Fluxter\SaasProviderBundle\Service\TenantService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -24,8 +25,9 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class CreateClientCommand extends Command
 {
     public function __construct(
-        private EntityManagerInterface $em,
-        private EventDispatcherInterface $eventDispatcher,
+        private readonly EntityManagerInterface $em,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly TenantService $tenantService,
         private string $saasClientEntity,
     ) {
         parent::__construct();
@@ -34,6 +36,10 @@ class CreateClientCommand extends Command
     protected function configure(): void
     {
         $this
+            ->setAliases([
+                'fluxter:saas:create-client',
+                'fx:saas:create-client',
+            ])
             ->addArgument('url', InputArgument::REQUIRED, 'The url without www and http')
         ;
     }
@@ -43,6 +49,7 @@ class CreateClientCommand extends Command
         /** @var TenantInterface */
         $client = new $this->saasClientEntity();
         $client->setUrl($input->getArgument('url'));
+        $this->tenantService->setTenant($client);
 
         $event = new ConsoleClientCreationEvent($client, new SymfonyStyle($input, $output));
         $this->eventDispatcher->dispatch($event);

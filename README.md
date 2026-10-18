@@ -25,6 +25,8 @@ composer require fluxter/saas-provider-bundle
     # config/packages/saas_provider.yaml
     saas_provider:
       client_entity: App\Entity\Tenant
+      # Optional: host that works without a tenant (e.g. the landing page / sign up)
+      global_url: app.yourdomain.tld
       # Optional: regular expressions of routes that also work without a tenant
       exclude_routes:
         - '^_profiler'

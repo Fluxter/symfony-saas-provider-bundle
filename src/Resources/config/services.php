@@ -11,8 +11,8 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Doctrine\ORM\Events;
 use Fluxter\SaasProviderBundle\Command\CreateClientCommand;
-use Fluxter\SaasProviderBundle\EventSubscriber\ClientSubscriber;
 use Fluxter\SaasProviderBundle\EventSubscriber\TenantChildEntitySubscriber;
+use Fluxter\SaasProviderBundle\EventSubscriber\TenantSubscriber;
 use Fluxter\SaasProviderBundle\Form\Extension\ClientEntityTypeExtension;
 use Fluxter\SaasProviderBundle\Form\Type\TenantChildType;
 use Fluxter\SaasProviderBundle\Form\TypeGuesser\TenantChildEntityTypeGuesser;
@@ -33,7 +33,8 @@ return static function (ContainerConfigurator $container): void {
     // System services
     $services->set(TenantService::class)
         ->public()
-        ->arg('$saasClientEntity', param('saas_provider.client_entity'));
+        ->arg('$saasClientEntity', param('saas_provider.client_entity'))
+        ->tag('kernel.reset', ['method' => 'reset']);
     $services->set(DynamicSaasClientAccessorService::class)
         ->public();
 
@@ -50,8 +51,9 @@ return static function (ContainerConfigurator $container): void {
         ->tag('security.voter');
 
     // Event listeners
-    $services->set(ClientSubscriber::class)
+    $services->set(TenantSubscriber::class)
         ->arg('$excludeRoutes', param('saas_provider.exclude_routes'))
+        ->arg('$globalUrl', param('saas_provider.global_url'))
         ->tag('kernel.event_subscriber');
     $services->set(TenantChildEntitySubscriber::class)
         ->tag('doctrine.event_listener', ['event' => Events::prePersist]);
