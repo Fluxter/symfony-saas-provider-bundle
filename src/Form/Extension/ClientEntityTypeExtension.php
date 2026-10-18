@@ -9,12 +9,13 @@
 
 namespace Fluxter\SaasProviderBundle\Form\Extension;
 
-use Fluxter\SaasProviderBundle\Form\Type\ClientEntityType;
+use Fluxter\SaasProviderBundle\Form\Type\TenantChildType;
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class ClientEntityTypeExtension extends AbstractTypeExtension
 {
-    public function buildForm(\Symfony\Component\Form\FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
     }
@@ -22,7 +23,7 @@ class ClientEntityTypeExtension extends AbstractTypeExtension
     public static function getExtendedTypes(): iterable
     {
         return [
-            ClientEntityType::class,
+            TenantChildType::class,
         ];
     }
 }

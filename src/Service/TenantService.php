@@ -1,7 +1,10 @@
 <?php
 
 /*
+ * This file is part of the SaasProviderBundle package.
  * (c) Fluxter <http://fluxter.net/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Fluxter\SaasProviderBundle\Service;
@@ -9,19 +12,18 @@ namespace Fluxter\SaasProviderBundle\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Fluxter\SaasProviderBundle\Model\TenantChildInterface;
 use Fluxter\SaasProviderBundle\Model\TenantInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class TenantService
 {
-    /** @var string */
-    private $saasClientEntity;
-
-    public function __construct(ContainerInterface $container, private EntityManagerInterface $em, private RequestStack $requestStack)
-    {
-        $this->em = $em;
-        $this->saasClientEntity = $container->getParameter('saas_provider.client_entity');
-        $this->requestStack = $requestStack;
+    /**
+     * @param class-string<TenantInterface> $saasClientEntity
+     */
+    public function __construct(
+        private EntityManagerInterface $em,
+        private RequestStack $requestStack,
+        private string $saasClientEntity,
+    ) {
     }
 
     public function createClient(array $parameters)
@@ -35,7 +37,7 @@ class TenantService
         }
 
         $this->em->persist($client);
-        $this->em->flush($client);
+        $this->em->flush();
 
         return $client;
     }
@@ -71,6 +73,11 @@ class TenantService
 
     private function discoverClient(): ?TenantInterface
     {
+        // No request (e.g. console), so there is no host to discover the client by
+        if (null === $this->requestStack->getCurrentRequest()) {
+            return null;
+        }
+
         $url = $this->getCurrentHttpHost();
         $repo = $this->em->getRepository($this->saasClientEntity);
         $client = $repo->findOneBy(['url' => $url]);
